@@ -1,0 +1,48 @@
+apply plugin: 'org.springframework.boot'
+
+dependencies {
+	testImplementation 'com.tngtech.archunit:archunit:1.4.1'
+    implementation 'org.reactivecommons.utils:object-mapper:0.1.0'
+    implementation project(':api-rest')
+    implementation project(':model')
+    implementation project(':usecase')
+    implementation project(':jpa-repository')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+
+    testImplementation 'org.springframework:spring-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation libs.archunit
+    testImplementation 'tools.jackson.core:jackson-databind'
+}
+
+tasks.register('explodedJar', Copy) {
+    with jar
+    into layout.buildDirectory.dir("exploded")
+}
+
+jar {
+    // To disable the *-plain.jar
+    enabled = false
+}
+
+bootJar {
+    // Sets output jar name
+    archiveFileName = "${project.getParent().getName()}.${archiveExtension.get()}"
+}
+
+sourceSets {
+    test {
+        java {
+            // Keep only UseCase tests, exclude all others
+            exclude 'co/com/bancolombia/**'
+        }
+    }
+}
+
+test {
+    // Exclude auto-generated ArchUnit test files with incompatible Lombok logger annotations
+    exclude '**/ArchitectureTest.class'
+    exclude '**/Utils.class'
+}

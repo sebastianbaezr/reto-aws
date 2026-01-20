@@ -1,0 +1,41 @@
+pluginManagement {
+    repositories {
+        //mavenLocal()
+        gradlePluginPortal()
+    }
+}
+
+buildCache {
+    local {
+        directory = new File(rootDir, 'build-cache')
+    }
+}
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            // Critical Dependencies with Explicit Versions
+            library('lombok', 'org.projectlombok:lombok:1.18.42')
+            library('mapstruct', 'org.mapstruct:mapstruct:1.5.5.Final')
+            library('mapstruct.processor', 'org.mapstruct:mapstruct-processor:1.5.5.Final')
+            library('postgres.connector', 'org.postgresql:postgresql:42.7.3')
+            library('jakarta.validation', 'jakarta.validation:jakarta.validation-api:3.0.2')
+            library('archunit', 'com.tngtech.archunit:archunit:1.4.1')
+            library('blockhound', 'io.projectreactor.tools:blockhound-junit-platform:1.0.15.RELEASE')
+        }
+    }
+}
+
+rootProject.name = 'RetoAws'
+
+include ':app-service'
+include ':model'
+include ':usecase'
+include ':jpa-repository'
+include ':api-rest'
+
+project(':app-service').projectDir = file('./applications/app-service')
+project(':model').projectDir = file('./domain/model')
+project(':usecase').projectDir = file('./domain/usecase')
+project(':jpa-repository').projectDir = file('./infrastructure/driven-adapters/jpa-repository')
+project(':api-rest').projectDir = file('./infrastructure/entry-points/api-rest')

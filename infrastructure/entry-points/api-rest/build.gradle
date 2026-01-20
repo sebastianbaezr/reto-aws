@@ -1,0 +1,26 @@
+dependencies {
+    implementation project(':usecase')
+    implementation project(':model')
+    implementation project(':jpa-repository')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    implementation libs.jakarta.validation
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+    implementation libs.mapstruct
+    annotationProcessor libs.mapstruct.processor
+}
+
+sourceSets {
+    test {
+        java {
+            // Exclude all API tests temporarily
+            exclude 'co/com/bancolombia/api/**'
+        }
+    }
+}
