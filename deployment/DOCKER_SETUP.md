@@ -35,10 +35,38 @@ Esto creará una imagen Docker con:
 docker run -d --name reto-aws-api -p 8080:8080 reto-aws-api:latest
 ```
 
-**Forma con variables de entorno** (para sobrescribir credenciales si es necesario):
+**Forma con archivo .env** (recomendado para pasar múltiples variables):
 
 ```bash
-docker run -d --name reto-aws-api -p 8080:8080 -e DB_PASSWORD=otra_contraseña reto-aws-api:latest
+# 1. Crear archivo .env en deployment/
+cat > deployment/.env << 'EOF'
+DB_HOST=database-1.cyjc2g6ec3fc.us-east-1.rds.amazonaws.com
+DB_PORT=5432
+DB_NAME=reto_aws
+DB_USERNAME=postgres
+DB_PASSWORD=zRunL4ngcNaR65E
+EOF
+
+# 2. Ejecutar contenedor con el archivo .env
+docker run -d \
+  --name reto-aws-api \
+  -p 8080:8080 \
+  --env-file deployment/.env \
+  reto-aws-api:latest
+```
+
+**Forma con variables individuales** (para sobrescribir credenciales si es necesario):
+
+```bash
+docker run -d \
+  --name reto-aws-api \
+  -p 8080:8080 \
+  -e DB_HOST=database-1.cyjc2g6ec3fc.us-east-1.rds.amazonaws.com \
+  -e DB_PORT=5432 \
+  -e DB_NAME=reto_aws \
+  -e DB_USERNAME=postgres \
+  -e DB_PASSWORD=zRunL4ngcNaR65E \
+  reto-aws-api:latest
 ```
 
 #### Parámetros:
