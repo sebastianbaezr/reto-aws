@@ -8,6 +8,7 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation libs.jakarta.validation
+    implementation libs.hibernate.validator
 
     compileOnly libs.lombok
     annotationProcessor libs.lombok

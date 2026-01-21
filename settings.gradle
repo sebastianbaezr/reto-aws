@@ -20,6 +20,7 @@ dependencyResolutionManagement {
             library('mapstruct.processor', 'org.mapstruct:mapstruct-processor:1.5.5.Final')
             library('postgres.connector', 'org.postgresql:postgresql:42.7.3')
             library('jakarta.validation', 'jakarta.validation:jakarta.validation-api:3.0.2')
+            library('hibernate.validator', 'org.hibernate.validator:hibernate-validator:8.0.1.Final')
             library('archunit', 'com.tngtech.archunit:archunit:1.4.1')
             library('blockhound', 'io.projectreactor.tools:blockhound-junit-platform:1.0.15.RELEASE')
         }
