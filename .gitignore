@@ -335,5 +335,8 @@ gradle-app.setting
 *.hprof
 build-cache
 
-# Application configuration with sensitive data
-applications/app-service/src/main/resources/application.yaml
+# Application configuration with sensitive data for local development
+applications/app-service/src/main/resources/application-local.yaml
+
+# Environment files with secrets
+deployment/.env
