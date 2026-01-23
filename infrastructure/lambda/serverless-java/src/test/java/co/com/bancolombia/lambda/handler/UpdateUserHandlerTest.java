@@ -1,9 +1,18 @@
 package co.com.bancolombia.lambda.handler;
 
 import co.com.bancolombia.lambda.dto.LambdaResponse;
+import co.com.bancolombia.lambda.dto.UserRequestDto;
+import co.com.bancolombia.lambda.dto.UserResponseDto;
+import co.com.bancolombia.lambda.exception.LambdaException;
+import co.com.bancolombia.lambda.exception.ValidationException;
+import co.com.bancolombia.lambda.mapper.UserMapper;
+import co.com.bancolombia.lambda.model.User;
+import co.com.bancolombia.lambda.response.ResponseFactory;
+import co.com.bancolombia.lambda.serialization.JsonSerializer;
+import co.com.bancolombia.lambda.usecase.UpdateUserUseCase;
+import co.com.bancolombia.lambda.validation.ValidationService;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
-import com.google.gson.JsonObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -14,109 +23,198 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 class UpdateUserHandlerTest {
 
     private UpdateUserHandler handler;
     @Mock
     private Context context;
+    @Mock
+    private JsonSerializer jsonSerializer;
+    @Mock
+    private ResponseFactory responseFactory;
+    @Mock
+    private UpdateUserUseCase updateUserUseCase;
+    @Mock
+    private UserMapper userMapper;
+    @Mock
+    private ValidationService validationService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        context = mock(Context.class);
         LambdaLogger logger = mock(LambdaLogger.class);
         when(context.getLogger()).thenReturn(logger);
-        handler = new UpdateUserHandler();
+        
+        handler = new UpdateUserHandler(jsonSerializer, responseFactory, 
+                updateUserUseCase, userMapper, validationService);
     }
 
     @Test
     void testUpdateUserSuccess() {
+        // Arrange
         Map<String, Object> input = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
-        // Use ID 3 which is a hardcoded user
         pathParameters.put("id", "3");
         input.put("pathParameters", pathParameters);
-
-        JsonObject userJson = new JsonObject();
-        userJson.addProperty("nombre", "Updated Name");
-        userJson.addProperty("email", "updated.user@test.com");
-        input.put("body", userJson.toString());
-
+        
+        String requestBody = "{\"nombre\":\"Updated Name\",\"email\":\"updated.user@test.com\"}";
+        input.put("body", requestBody);
+        
+        UserRequestDto requestDto = UserRequestDto.builder()
+                .nombre("Updated Name")
+                .email("updated.user@test.com")
+                .build();
+        User user = User.builder()
+                .nombre("Updated Name")
+                .email("updated.user@test.com")
+                .build();
+        User updatedUser = User.builder()
+                .id(3L)
+                .nombre("Updated Name")
+                .email("updated.user@test.com")
+                .build();
+        UserResponseDto responseDto = UserResponseDto.builder()
+                .id(3L)
+                .nombre("Updated Name")
+                .email("updated.user@test.com")
+                .build();
+        
+        when(jsonSerializer.fromJson(requestBody, UserRequestDto.class)).thenReturn(requestDto);
+        when(userMapper.requestToModel(requestDto)).thenReturn(user);
+        when(updateUserUseCase.execute(3L, user)).thenReturn(updatedUser);
+        when(userMapper.modelToResponse(updatedUser)).thenReturn(responseDto);
+        when(jsonSerializer.toJson(responseDto)).thenReturn("{\"id\":3,\"nombre\":\"Updated Name\",\"email\":\"updated.user@test.com\"}");
+        
+        // Act
         LambdaResponse response = handler.handleRequest(input, context);
-
+        
+        // Assert
         assertEquals(200, response.getStatusCode());
         assertNotNull(response.getBody());
+        verify(validationService).validate(requestDto);
+        verify(updateUserUseCase).execute(3L, user);
     }
 
     @Test
     void testUpdateUserNotFound() {
+        // Arrange
         Map<String, Object> input = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
         pathParameters.put("id", "999");
         input.put("pathParameters", pathParameters);
-
-        JsonObject userJson = new JsonObject();
-        userJson.addProperty("nombre", "Updated Name");
-        userJson.addProperty("email", "updated@test.com");
-        input.put("body", userJson.toString());
-
+        
+        String requestBody = "{\"nombre\":\"Updated Name\",\"email\":\"updated@test.com\"}";
+        input.put("body", requestBody);
+        
+        UserRequestDto requestDto = UserRequestDto.builder()
+                .nombre("Updated Name")
+                .email("updated@test.com")
+                .build();
+        User user = User.builder()
+                .nombre("Updated Name")
+                .email("updated@test.com")
+                .build();
+        
+        when(jsonSerializer.fromJson(requestBody, UserRequestDto.class)).thenReturn(requestDto);
+        when(userMapper.requestToModel(requestDto)).thenReturn(user);
+        when(updateUserUseCase.execute(999L, user)).thenThrow(new LambdaException("User not found with ID: 999", 404));
+        when(responseFactory.createError("User not found with ID: 999"))
+                .thenReturn(new co.com.bancolombia.lambda.dto.ErrorResponseDto("User not found with ID: 999"));
+        when(jsonSerializer.toJson(any())).thenReturn("{\"error\":\"User not found with ID: 999\"}");
+        
+        // Act
         LambdaResponse response = handler.handleRequest(input, context);
-
+        
+        // Assert
         assertEquals(404, response.getStatusCode());
         assertNotNull(response.getBody());
+        verify(validationService).validate(requestDto);
+        verify(updateUserUseCase).execute(999L, user);
     }
 
     @Test
     void testUpdateUserMissingId() {
+        // Arrange
         Map<String, Object> input = new HashMap<>();
         input.put("pathParameters", new HashMap<>());
-
-        JsonObject userJson = new JsonObject();
-        userJson.addProperty("nombre", "Updated Name");
-        userJson.addProperty("email", "updated@test.com");
-        input.put("body", userJson.toString());
-
+        
+        String requestBody = "{\"nombre\":\"Updated Name\",\"email\":\"updated@test.com\"}";
+        input.put("body", requestBody);
+        
+        when(responseFactory.createError("User ID is required"))
+                .thenReturn(new co.com.bancolombia.lambda.dto.ErrorResponseDto("User ID is required"));
+        when(jsonSerializer.toJson(any())).thenReturn("{\"error\":\"User ID is required\"}");
+        
+        // Act
         LambdaResponse response = handler.handleRequest(input, context);
-
+        
+        // Assert
         assertEquals(400, response.getStatusCode());
         assertNotNull(response.getBody());
+        verify(validationService, never()).validate(any());
+        verify(updateUserUseCase, never()).execute(any(), any());
     }
 
     @Test
     void testUpdateUserMissingBody() {
+        // Arrange
         Map<String, Object> input = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
         pathParameters.put("id", "1");
         input.put("pathParameters", pathParameters);
         input.put("body", "");
-
+        
+        when(responseFactory.createError("Request body is required"))
+                .thenReturn(new co.com.bancolombia.lambda.dto.ErrorResponseDto("Request body is required"));
+        when(jsonSerializer.toJson(any())).thenReturn("{\"error\":\"Request body is required\"}");
+        
+        // Act
         LambdaResponse response = handler.handleRequest(input, context);
-
+        
+        // Assert
         assertEquals(400, response.getStatusCode());
         assertNotNull(response.getBody());
+        verify(validationService, never()).validate(any());
+        verify(updateUserUseCase, never()).execute(any(), any());
     }
 
     @Test
     void testUpdateUserWithDuplicateEmail() {
+        // Arrange
         Map<String, Object> input = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
-        // Use ID 2 and try to update with ID 1's email
         pathParameters.put("id", "2");
         input.put("pathParameters", pathParameters);
-
-        JsonObject userJson = new JsonObject();
-        userJson.addProperty("nombre", "Updated Name");
-        // Try to set email to one of the hardcoded users' emails
-        userJson.addProperty("email", "juan.perez@bancolombia.com");
-        input.put("body", userJson.toString());
-
+        
+        String requestBody = "{\"nombre\":\"Updated Name\",\"email\":\"juan.perez@bancolombia.com\"}";
+        input.put("body", requestBody);
+        
+        UserRequestDto requestDto = UserRequestDto.builder()
+                .nombre("Updated Name")
+                .email("juan.perez@bancolombia.com")
+                .build();
+        User user = User.builder()
+                .nombre("Updated Name")
+                .email("juan.perez@bancolombia.com")
+                .build();
+        
+        when(jsonSerializer.fromJson(requestBody, UserRequestDto.class)).thenReturn(requestDto);
+        when(userMapper.requestToModel(requestDto)).thenReturn(user);
+        when(updateUserUseCase.execute(2L, user)).thenThrow(new ValidationException("Email already exists: juan.perez@bancolombia.com"));
+        when(responseFactory.createError("Email already exists: juan.perez@bancolombia.com"))
+                .thenReturn(new co.com.bancolombia.lambda.dto.ErrorResponseDto("Email already exists: juan.perez@bancolombia.com"));
+        when(jsonSerializer.toJson(any())).thenReturn("{\"error\":\"Email already exists: juan.perez@bancolombia.com\"}");
+        
+        // Act
         LambdaResponse response = handler.handleRequest(input, context);
-
+        
+        // Assert
         assertEquals(400, response.getStatusCode());
         assertNotNull(response.getBody());
+        verify(validationService).validate(requestDto);
+        verify(updateUserUseCase).execute(2L, user);
     }
 }

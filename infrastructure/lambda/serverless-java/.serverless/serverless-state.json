@@ -127,7 +127,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769186443499-2026-01-23T16:40:43.499Z/serverless-java-all.jar"
               },
               "Handler": "co.com.bancolombia.lambda.handler.CreateUserHandler",
               "Runtime": "java17",
@@ -156,7 +156,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769186443499-2026-01-23T16:40:43.499Z/serverless-java-all.jar"
               },
               "Handler": "co.com.bancolombia.lambda.handler.GetUserHandler",
               "Runtime": "java17",
@@ -185,7 +185,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769186443499-2026-01-23T16:40:43.499Z/serverless-java-all.jar"
               },
               "Handler": "co.com.bancolombia.lambda.handler.UpdateUserHandler",
               "Runtime": "java17",
@@ -214,7 +214,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769186443499-2026-01-23T16:40:43.499Z/serverless-java-all.jar"
               },
               "Handler": "co.com.bancolombia.lambda.handler.DeleteUserHandler",
               "Runtime": "java17",
@@ -238,47 +238,47 @@
               "DeleteUserJavaLogGroup"
             ]
           },
-          "CreateUserJavaLambdaVersionQqrLeSVskOeF3xi0SZFnnbP5FRBmFdf1vbGy2vAk": {
+          "CreateUserJavaLambdaVersionDl1XNikAgakdhR5DuiRTTZJEC0PTzY5BuuqIrExxX9E": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateUserJavaLambdaFunction"
               },
-              "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+              "CodeSha256": "mfKjC3USTVMlRP3QvJ/V/AKdYgKXc9cI475nnZDT74o=",
               "Description": "Create a new user (Java implementation)"
             }
           },
-          "GetUserJavaLambdaVersion2VX0GOsKnGjTwR3h8BX7Nfu4ASOd34PfPalNDyEJQM": {
+          "GetUserJavaLambdaVersionBeDxA9Z1ZQmQioqUqQtnKmI1FvAABLyLlW0git2c": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetUserJavaLambdaFunction"
               },
-              "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+              "CodeSha256": "mfKjC3USTVMlRP3QvJ/V/AKdYgKXc9cI475nnZDT74o=",
               "Description": "Get user by ID (Java implementation)"
             }
           },
-          "UpdateUserJavaLambdaVersionM2vwzaioEWWLtoF0t1Bud9YsGiQxhxw8S51i2LoNI": {
+          "UpdateUserJavaLambdaVersionBK3uFdS5ce5mCMx7BkL3lXk3B9Qzz3TGeXa99XCU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UpdateUserJavaLambdaFunction"
               },
-              "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+              "CodeSha256": "mfKjC3USTVMlRP3QvJ/V/AKdYgKXc9cI475nnZDT74o=",
               "Description": "Update user by ID (Java implementation)"
             }
           },
-          "DeleteUserJavaLambdaVersionHEV20Tx37BD6FaZgS1t6WDTfS3qqdXKKVtdZoIiUYc": {
+          "DeleteUserJavaLambdaVersionuWqiaCFwNp39f0Y1gbO30gBGc54wIiTGmMVMfaVM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DeleteUserJavaLambdaFunction"
               },
-              "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+              "CodeSha256": "mfKjC3USTVMlRP3QvJ/V/AKdYgKXc9cI475nnZDT74o=",
               "Description": "Delete user by ID (Java implementation)"
             }
           },
@@ -601,7 +601,7 @@
           "CreateUserJavaLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateUserJavaLambdaVersionQqrLeSVskOeF3xi0SZFnnbP5FRBmFdf1vbGy2vAk"
+              "Ref": "CreateUserJavaLambdaVersionDl1XNikAgakdhR5DuiRTTZJEC0PTzY5BuuqIrExxX9E"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-CreateUserJavaLambdaFunctionQualifiedArn"
@@ -610,7 +610,7 @@
           "GetUserJavaLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetUserJavaLambdaVersion2VX0GOsKnGjTwR3h8BX7Nfu4ASOd34PfPalNDyEJQM"
+              "Ref": "GetUserJavaLambdaVersionBeDxA9Z1ZQmQioqUqQtnKmI1FvAABLyLlW0git2c"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-GetUserJavaLambdaFunctionQualifiedArn"
@@ -619,7 +619,7 @@
           "UpdateUserJavaLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdateUserJavaLambdaVersionM2vwzaioEWWLtoF0t1Bud9YsGiQxhxw8S51i2LoNI"
+              "Ref": "UpdateUserJavaLambdaVersionBK3uFdS5ce5mCMx7BkL3lXk3B9Qzz3TGeXa99XCU"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-UpdateUserJavaLambdaFunctionQualifiedArn"
@@ -628,7 +628,7 @@
           "DeleteUserJavaLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DeleteUserJavaLambdaVersionHEV20Tx37BD6FaZgS1t6WDTfS3qqdXKKVtdZoIiUYc"
+              "Ref": "DeleteUserJavaLambdaVersionuWqiaCFwNp39f0Y1gbO30gBGc54wIiTGmMVMfaVM"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-DeleteUserJavaLambdaFunctionQualifiedArn"
@@ -679,7 +679,7 @@
         "handler": "co.com.bancolombia.lambda.handler.CreateUserHandler",
         "description": "Create a new user (Java implementation)",
         "package": {
-          "artifact": "../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar"
+          "artifact": "build/libs/serverless-java-all.jar"
         },
         "events": [
           {
@@ -696,14 +696,14 @@
         "name": "reto-aws-serverless-users-dev-createUserJava",
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "CreateUserJavaLambdaVersionQqrLeSVskOeF3xi0SZFnnbP5FRBmFdf1vbGy2vAk"
+        "versionLogicalId": "CreateUserJavaLambdaVersionDl1XNikAgakdhR5DuiRTTZJEC0PTzY5BuuqIrExxX9E"
       },
       "getUserJava": {
         "runtime": "java17",
         "handler": "co.com.bancolombia.lambda.handler.GetUserHandler",
         "description": "Get user by ID (Java implementation)",
         "package": {
-          "artifact": "../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar"
+          "artifact": "build/libs/serverless-java-all.jar"
         },
         "events": [
           {
@@ -720,14 +720,14 @@
         "name": "reto-aws-serverless-users-dev-getUserJava",
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "GetUserJavaLambdaVersion2VX0GOsKnGjTwR3h8BX7Nfu4ASOd34PfPalNDyEJQM"
+        "versionLogicalId": "GetUserJavaLambdaVersionBeDxA9Z1ZQmQioqUqQtnKmI1FvAABLyLlW0git2c"
       },
       "updateUserJava": {
         "runtime": "java17",
         "handler": "co.com.bancolombia.lambda.handler.UpdateUserHandler",
         "description": "Update user by ID (Java implementation)",
         "package": {
-          "artifact": "../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar"
+          "artifact": "build/libs/serverless-java-all.jar"
         },
         "events": [
           {
@@ -744,14 +744,14 @@
         "name": "reto-aws-serverless-users-dev-updateUserJava",
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "UpdateUserJavaLambdaVersionM2vwzaioEWWLtoF0t1Bud9YsGiQxhxw8S51i2LoNI"
+        "versionLogicalId": "UpdateUserJavaLambdaVersionBK3uFdS5ce5mCMx7BkL3lXk3B9Qzz3TGeXa99XCU"
       },
       "deleteUserJava": {
         "runtime": "java17",
         "handler": "co.com.bancolombia.lambda.handler.DeleteUserHandler",
         "description": "Delete user by ID (Java implementation)",
         "package": {
-          "artifact": "../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar"
+          "artifact": "build/libs/serverless-java-all.jar"
         },
         "events": [
           {
@@ -768,7 +768,7 @@
         "name": "reto-aws-serverless-users-dev-deleteUserJava",
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "DeleteUserJavaLambdaVersionHEV20Tx37BD6FaZgS1t6WDTfS3qqdXKKVtdZoIiUYc"
+        "versionLogicalId": "DeleteUserJavaLambdaVersionuWqiaCFwNp39f0Y1gbO30gBGc54wIiTGmMVMfaVM"
       }
     },
     "resources": {
@@ -788,7 +788,7 @@
         "individually": true,
         "artifactsS3KeyDirname": "serverless/reto-aws-serverless-users/dev/code-artifacts",
         "deploymentBucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-        "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z"
+        "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769186443499-2026-01-23T16:40:43.499Z"
       },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
@@ -803,7 +803,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z",
+    "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769186443499-2026-01-23T16:40:43.499Z",
     "artifact": ""
   }
 }

@@ -1,15 +1,17 @@
-package co.com.bancolombia.lambda.dto;
+package co.com.bancolombia.lambda.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
-@Builder
-public class UserDto {
+@AllArgsConstructor
+@Builder(toBuilder = true)
+public class User {
     private Long id;
     private String nombre;
     private String email;

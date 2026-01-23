@@ -1,50 +1,58 @@
 package co.com.bancolombia.lambda.handler;
 
 import co.com.bancolombia.lambda.dto.LambdaResponse;
-import co.com.bancolombia.lambda.dto.UserDto;
-import co.com.bancolombia.lambda.exception.LambdaException;
-import co.com.bancolombia.lambda.mapper.UserLambdaDtoMapper;
-import co.com.bancolombia.lambda.repository.InMemoryUserRepository;
-import co.com.bancolombia.lambda.usecase.CreateUserLambdaUseCase;
+import co.com.bancolombia.lambda.dto.UserRequestDto;
+import co.com.bancolombia.lambda.factory.ServiceFactory;
+import co.com.bancolombia.lambda.mapper.UserMapper;
+import co.com.bancolombia.lambda.model.User;
+import co.com.bancolombia.lambda.response.ResponseFactory;
+import co.com.bancolombia.lambda.serialization.JsonSerializer;
+import co.com.bancolombia.lambda.usecase.CreateUserUseCase;
+import co.com.bancolombia.lambda.validation.ValidationService;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 
 import java.util.Map;
 
-public class CreateUserHandler implements RequestHandler<Map<String, Object>, LambdaResponse> {
+public class CreateUserHandler extends AbstractLambdaHandler {
 
-    private final InMemoryUserRepository repository = new InMemoryUserRepository();
-    private final CreateUserLambdaUseCase useCase = new CreateUserLambdaUseCase(repository);
+    private final CreateUserUseCase createUserUseCase;
+    private final UserMapper userMapper;
+    private final ValidationService validationService;
+
+    public CreateUserHandler() {
+        super(
+                ServiceFactory.getJsonSerializer(),
+                ServiceFactory.getResponseFactory()
+        );
+        this.createUserUseCase = ServiceFactory.getCreateUserUseCase();
+        this.userMapper = ServiceFactory.getUserMapper();
+        this.validationService = ServiceFactory.getValidationService();
+    }
+
+    CreateUserHandler(JsonSerializer jsonSerializer,
+                      ResponseFactory responseFactory,
+                      CreateUserUseCase createUserUseCase,
+                      UserMapper userMapper,
+                      ValidationService validationService) {
+        super(jsonSerializer, responseFactory);
+        this.createUserUseCase = createUserUseCase;
+        this.userMapper = userMapper;
+        this.validationService = validationService;
+    }
 
     @Override
-    public LambdaResponse handleRequest(Map<String, Object> input, Context context) {
+    protected LambdaResponse processRequest(Map<String, Object> input, Context context) {
         context.getLogger().log("Creating new user");
 
-        try {
-            String body = (String) input.get("body");
-            if (body == null || body.isEmpty()) {
-                return new LambdaResponse(400, UserLambdaDtoMapper.toJson(
-                        UserLambdaDtoMapper.createErrorResponse("Request body is required")));
-            }
+        String body = extractBody(input);
+        UserRequestDto requestDto = jsonSerializer.fromJson(body, UserRequestDto.class);
 
-            UserDto userInput = UserLambdaDtoMapper.fromJson(body);
-            UserDto createdUser = useCase.execute(userInput);
+        validationService.validate(requestDto);
 
-            return new LambdaResponse(201, UserLambdaDtoMapper.toJson(createdUser));
-        } catch (JsonSyntaxException e) {
-            context.getLogger().log("Invalid JSON: " + e.getMessage());
-            return new LambdaResponse(400, UserLambdaDtoMapper.toJson(
-                    UserLambdaDtoMapper.createErrorResponse("Invalid JSON format")));
-        } catch (LambdaException e) {
-            context.getLogger().log("Lambda exception: " + e.getMessage());
-            return new LambdaResponse(e.getStatusCode(), UserLambdaDtoMapper.toJson(
-                    UserLambdaDtoMapper.createErrorResponse(e.getMessage())));
-        } catch (Exception e) {
-            context.getLogger().log("Unexpected error: " + e.getMessage());
-            return new LambdaResponse(500, UserLambdaDtoMapper.toJson(
-                    UserLambdaDtoMapper.createErrorResponse("Internal server error")));
-        }
+        User user = userMapper.requestToModel(requestDto);
+        User createdUser = createUserUseCase.execute(user);
+
+        return new LambdaResponse(201,
+                jsonSerializer.toJson(userMapper.modelToResponse(createdUser)));
     }
 }

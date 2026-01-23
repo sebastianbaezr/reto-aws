@@ -21,7 +21,7 @@ functions:
     handler: co.com.bancolombia.lambda.handler.CreateUserHandler
     description: Create a new user (Java implementation)
     package:
-      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar
+      artifact: build/libs/serverless-java-all.jar
     events:
       - httpApi:
           path: /api/serverless/users
@@ -34,7 +34,7 @@ functions:
     handler: co.com.bancolombia.lambda.handler.GetUserHandler
     description: Get user by ID (Java implementation)
     package:
-      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar
+      artifact: build/libs/serverless-java-all.jar
     events:
       - httpApi:
           path: /api/serverless/users/{id}
@@ -47,7 +47,7 @@ functions:
     handler: co.com.bancolombia.lambda.handler.UpdateUserHandler
     description: Update user by ID (Java implementation)
     package:
-      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar
+      artifact: build/libs/serverless-java-all.jar
     events:
       - httpApi:
           path: /api/serverless/users/{id}
@@ -60,7 +60,7 @@ functions:
     handler: co.com.bancolombia.lambda.handler.DeleteUserHandler
     description: Delete user by ID (Java implementation)
     package:
-      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar
+      artifact: build/libs/serverless-java-all.jar
     events:
       - httpApi:
           path: /api/serverless/users/{id}
