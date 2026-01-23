@@ -1,0 +1,809 @@
+{
+  "service": {
+    "service": "reto-aws-serverless-users",
+    "serviceObject": {
+      "name": "reto-aws-serverless-users"
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs20.x",
+      "region": "us-east-1",
+      "stage": "dev",
+      "environment": {
+        "ENVIRONMENT": "dev"
+      },
+      "httpApi": {
+        "metrics": true
+      },
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "HU7 Serverless CRUD Users API - Node.js Implementation",
+        "Resources": {
+          "CreateUserNodeLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-createUserNode"
+            }
+          },
+          "GetUserNodeLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-getUserNode"
+            }
+          },
+          "UpdateUserNodeLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-updateUserNode"
+            }
+          },
+          "DeleteUserNodeLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-deleteUserNode"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "reto-aws-serverless-users",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*:*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "reto-aws-serverless-users",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "CreateUserNodeLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z/createUserNode.zip"
+              },
+              "Handler": "src/handlers/createUser.createUser",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "reto-aws-serverless-users-dev-createUserNode",
+              "MemorySize": 256,
+              "Timeout": 30,
+              "Description": "Create a new user (Node.js implementation)",
+              "Environment": {
+                "Variables": {
+                  "ENVIRONMENT": "dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "CreateUserNodeLogGroup"
+            ]
+          },
+          "GetUserNodeLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z/getUserNode.zip"
+              },
+              "Handler": "src/handlers/getUser.getUser",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "reto-aws-serverless-users-dev-getUserNode",
+              "MemorySize": 256,
+              "Timeout": 30,
+              "Description": "Get user by ID (Node.js implementation)",
+              "Environment": {
+                "Variables": {
+                  "ENVIRONMENT": "dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetUserNodeLogGroup"
+            ]
+          },
+          "UpdateUserNodeLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z/updateUserNode.zip"
+              },
+              "Handler": "src/handlers/updateUser.updateUser",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "reto-aws-serverless-users-dev-updateUserNode",
+              "MemorySize": 256,
+              "Timeout": 30,
+              "Description": "Update user by ID (Node.js implementation)",
+              "Environment": {
+                "Variables": {
+                  "ENVIRONMENT": "dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UpdateUserNodeLogGroup"
+            ]
+          },
+          "DeleteUserNodeLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z/deleteUserNode.zip"
+              },
+              "Handler": "src/handlers/deleteUser.deleteUser",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "reto-aws-serverless-users-dev-deleteUserNode",
+              "MemorySize": 256,
+              "Timeout": 30,
+              "Description": "Delete user by ID (Node.js implementation)",
+              "Environment": {
+                "Variables": {
+                  "ENVIRONMENT": "dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "DeleteUserNodeLogGroup"
+            ]
+          },
+          "CreateUserNodeLambdaVersionb7fYyTkheCgd48BLba4Mc6tD8vE0uvObockzpII6KI": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CreateUserNodeLambdaFunction"
+              },
+              "CodeSha256": "4XGB5Xq4e+owW84TNVxdK/AnLQIaEn9XKegEf8IYeGo=",
+              "Description": "Create a new user (Node.js implementation)"
+            }
+          },
+          "DeleteUserNodeLambdaVersionQfRcssBiuEvjV8DMXd8W5cNiZz3IeV9FhdXwL8JitcQ": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "DeleteUserNodeLambdaFunction"
+              },
+              "CodeSha256": "4XGB5Xq4e+owW84TNVxdK/AnLQIaEn9XKegEf8IYeGo=",
+              "Description": "Delete user by ID (Node.js implementation)"
+            }
+          },
+          "GetUserNodeLambdaVersionMT8r7ln58ozMAuOBtLFZ2rXaAQiv5nIZO39u7V6Rxk": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetUserNodeLambdaFunction"
+              },
+              "CodeSha256": "4XGB5Xq4e+owW84TNVxdK/AnLQIaEn9XKegEf8IYeGo=",
+              "Description": "Get user by ID (Node.js implementation)"
+            }
+          },
+          "UpdateUserNodeLambdaVersioncMptFd1HiREhRmelGs90BUh70vEjHGOi3vGwLOVIQ1o": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateUserNodeLambdaFunction"
+              },
+              "CodeSha256": "4XGB5Xq4e+owW84TNVxdK/AnLQIaEn9XKegEf8IYeGo=",
+              "Description": "Update user by ID (Node.js implementation)"
+            }
+          },
+          "HttpApi": {
+            "Type": "AWS::ApiGatewayV2::Api",
+            "Properties": {
+              "Name": "dev-reto-aws-serverless-users",
+              "ProtocolType": "HTTP"
+            }
+          },
+          "HttpApiStage": {
+            "Type": "AWS::ApiGatewayV2::Stage",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "StageName": "$default",
+              "AutoDeploy": true,
+              "DefaultRouteSettings": {
+                "DetailedMetricsEnabled": true
+              }
+            }
+          },
+          "CreateUserNodeLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CreateUserNodeLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationCreateUserNode": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"CreateUserNodeLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePostApiServerlessUsers": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /api/serverless/users",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationCreateUserNode"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationCreateUserNode"
+          },
+          "GetUserNodeLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetUserNodeLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationGetUserNode": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"GetUserNodeLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRouteGetApiServerlessUsersIdVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "GET /api/serverless/users/{id}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationGetUserNode"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationGetUserNode"
+          },
+          "UpdateUserNodeLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateUserNodeLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationUpdateUserNode": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"UpdateUserNodeLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePutApiServerlessUsersIdVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "PUT /api/serverless/users/{id}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationUpdateUserNode"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationUpdateUserNode"
+          },
+          "DeleteUserNodeLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "DeleteUserNodeLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationDeleteUserNode": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"DeleteUserNodeLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRouteDeleteApiServerlessUsersIdVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "DELETE /api/serverless/users/{id}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationDeleteUserNode"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationDeleteUserNode"
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "CreateUserNodeLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CreateUserNodeLambdaVersionb7fYyTkheCgd48BLba4Mc6tD8vE0uvObockzpII6KI"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-CreateUserNodeLambdaFunctionQualifiedArn"
+            }
+          },
+          "DeleteUserNodeLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "DeleteUserNodeLambdaVersionQfRcssBiuEvjV8DMXd8W5cNiZz3IeV9FhdXwL8JitcQ"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-DeleteUserNodeLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetUserNodeLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetUserNodeLambdaVersionMT8r7ln58ozMAuOBtLFZ2rXaAQiv5nIZO39u7V6Rxk"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-GetUserNodeLambdaFunctionQualifiedArn"
+            }
+          },
+          "UpdateUserNodeLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateUserNodeLambdaVersioncMptFd1HiREhRmelGs90BUh70vEjHGOi3vGwLOVIQ1o"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-UpdateUserNodeLambdaFunctionQualifiedArn"
+            }
+          },
+          "HttpApiId": {
+            "Description": "Id of the HTTP API",
+            "Value": {
+              "Ref": "HttpApi"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-HttpApiId"
+            }
+          },
+          "HttpApiUrl": {
+            "Description": "URL of the HTTP API",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  }
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-HttpApiUrl"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "pluginsData": {},
+    "functions": {
+      "createUserNode": {
+        "runtime": "nodejs20.x",
+        "handler": "src/handlers/createUser.createUser",
+        "description": "Create a new user (Node.js implementation)",
+        "events": [
+          {
+            "httpApi": {
+              "path": "/api/serverless/users",
+              "method": "post"
+            },
+            "resolvedMethod": "POST",
+            "resolvedPath": "/api/serverless/users"
+          }
+        ],
+        "timeout": 30,
+        "memorySize": 256,
+        "name": "reto-aws-serverless-users-dev-createUserNode",
+        "package": {
+          "artifact": ".serverless\\createUserNode.zip"
+        },
+        "memory": 256,
+        "vpc": {},
+        "versionLogicalId": "CreateUserNodeLambdaVersionb7fYyTkheCgd48BLba4Mc6tD8vE0uvObockzpII6KI"
+      },
+      "getUserNode": {
+        "runtime": "nodejs20.x",
+        "handler": "src/handlers/getUser.getUser",
+        "description": "Get user by ID (Node.js implementation)",
+        "events": [
+          {
+            "httpApi": {
+              "path": "/api/serverless/users/{id}",
+              "method": "get"
+            },
+            "resolvedMethod": "GET",
+            "resolvedPath": "/api/serverless/users/{id}"
+          }
+        ],
+        "timeout": 30,
+        "memorySize": 256,
+        "name": "reto-aws-serverless-users-dev-getUserNode",
+        "package": {
+          "artifact": ".serverless\\getUserNode.zip"
+        },
+        "memory": 256,
+        "vpc": {},
+        "versionLogicalId": "GetUserNodeLambdaVersionMT8r7ln58ozMAuOBtLFZ2rXaAQiv5nIZO39u7V6Rxk"
+      },
+      "updateUserNode": {
+        "runtime": "nodejs20.x",
+        "handler": "src/handlers/updateUser.updateUser",
+        "description": "Update user by ID (Node.js implementation)",
+        "events": [
+          {
+            "httpApi": {
+              "path": "/api/serverless/users/{id}",
+              "method": "put"
+            },
+            "resolvedMethod": "PUT",
+            "resolvedPath": "/api/serverless/users/{id}"
+          }
+        ],
+        "timeout": 30,
+        "memorySize": 256,
+        "name": "reto-aws-serverless-users-dev-updateUserNode",
+        "package": {
+          "artifact": ".serverless\\updateUserNode.zip"
+        },
+        "memory": 256,
+        "vpc": {},
+        "versionLogicalId": "UpdateUserNodeLambdaVersioncMptFd1HiREhRmelGs90BUh70vEjHGOi3vGwLOVIQ1o"
+      },
+      "deleteUserNode": {
+        "runtime": "nodejs20.x",
+        "handler": "src/handlers/deleteUser.deleteUser",
+        "description": "Delete user by ID (Node.js implementation)",
+        "events": [
+          {
+            "httpApi": {
+              "path": "/api/serverless/users/{id}",
+              "method": "delete"
+            },
+            "resolvedMethod": "DELETE",
+            "resolvedPath": "/api/serverless/users/{id}"
+          }
+        ],
+        "timeout": 30,
+        "memorySize": 256,
+        "name": "reto-aws-serverless-users-dev-deleteUserNode",
+        "package": {
+          "artifact": ".serverless\\deleteUserNode.zip"
+        },
+        "memory": 256,
+        "vpc": {},
+        "versionLogicalId": "DeleteUserNodeLambdaVersionQfRcssBiuEvjV8DMXd8W5cNiZz3IeV9FhdXwL8JitcQ"
+      }
+    },
+    "resources": {
+      "Description": "HU7 Serverless CRUD Users API - Node.js Implementation",
+      "Resources": {},
+      "Outputs": {}
+    },
+    "configValidationMode": "warn",
+    "serviceFilename": "serverless",
+    "initialServerlessConfig": {
+      "service": "reto-aws-serverless-users",
+      "frameworkVersion": "4",
+      "provider": {
+        "$ref": "$[\"service\"][\"provider\"]"
+      },
+      "package": {
+        "individually": true,
+        "artifactsS3KeyDirname": "serverless/reto-aws-serverless-users/dev/code-artifacts",
+        "deploymentBucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+        "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z"
+      },
+      "functions": {
+        "$ref": "$[\"service\"][\"functions\"]"
+      },
+      "resources": {
+        "$ref": "$[\"service\"][\"resources\"]"
+      }
+    },
+    "appId": null,
+    "orgId": null,
+    "layers": {}
+  },
+  "package": {
+    "individually": true,
+    "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z",
+    "artifact": ""
+  }
+}

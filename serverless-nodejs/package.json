@@ -1,0 +1,41 @@
+{
+  "name": "serverless-nodejs-users-lambda",
+  "version": "1.0.0",
+  "description": "Node.js Lambda functions for serverless CRUD users API",
+  "main": "src/handlers/index.js",
+  "scripts": {
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
+    "test:unit": "jest src",
+    "deploy": "serverless deploy",
+    "deploy:dev": "serverless deploy --stage dev"
+  },
+  "keywords": [
+    "serverless",
+    "aws",
+    "lambda",
+    "users",
+    "crud"
+  ],
+  "author": "Bancolombia",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/**/*.test.js",
+      "!src/**/index.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.js?(x)",
+      "**/?(*.)+(spec|test).js?(x)"
+    ]
+  }
+}

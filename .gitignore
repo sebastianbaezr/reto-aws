@@ -340,3 +340,6 @@ applications/app-service/src/main/resources/application-local.yaml
 
 # Environment files with secrets
 deployment/.env
+
+# Node.js
+serverless-nodejs/node_modules/

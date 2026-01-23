@@ -1,0 +1,2216 @@
+{
+  "C:\\Users\\sebastian.baezr_prag\\Documents\\projects\\reto-aws\\deployment\\serverless.yml": {
+    "versionFramework": "4.31.0",
+    "servicePath": "C:\\Users\\sebastian.baezr_prag\\Documents\\projects\\reto-aws\\deployment\\serverless.yml",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "reto-aws-serverless-users",
+      "frameworkVersion": "4",
+      "provider": {
+        "name": "aws",
+        "runtime": "java17",
+        "region": "us-east-1",
+        "stage": "dev",
+        "environment": {
+          "ENVIRONMENT": "dev"
+        },
+        "httpApi": {
+          "metrics": true
+        },
+        "versionFunctions": true,
+        "compiledCloudFormationTemplate": {
+          "AWSTemplateFormatVersion": "2010-09-09",
+          "Description": "HU7 Serverless CRUD Users API - Java Implementation",
+          "Resources": {
+            "CreateUserJavaLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-createUserJava"
+              }
+            },
+            "GetUserJavaLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-getUserJava"
+              }
+            },
+            "UpdateUserJavaLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-updateUserJava"
+              }
+            },
+            "DeleteUserJavaLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-deleteUserJava"
+              }
+            },
+            "IamRoleLambdaExecution": {
+              "Type": "AWS::IAM::Role",
+              "Properties": {
+                "AssumeRolePolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": {
+                        "Service": [
+                          "lambda.amazonaws.com"
+                        ]
+                      },
+                      "Action": [
+                        "sts:AssumeRole"
+                      ]
+                    }
+                  ]
+                },
+                "Policies": [
+                  {
+                    "PolicyName": {
+                      "Fn::Join": [
+                        "-",
+                        [
+                          "reto-aws-serverless-users",
+                          "dev",
+                          "lambda"
+                        ]
+                      ]
+                    },
+                    "PolicyDocument": {
+                      "Version": "2012-10-17",
+                      "Statement": [
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:CreateLogStream",
+                            "logs:CreateLogGroup",
+                            "logs:TagResource"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*"
+                            }
+                          ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "logs:PutLogEvents"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*:*"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "Path": "/",
+                "RoleName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "reto-aws-serverless-users",
+                      "dev",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      "lambdaRole"
+                    ]
+                  ]
+                }
+              }
+            },
+            "CreateUserJavaLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+                },
+                "Handler": "co.com.bancolombia.lambda.handler.CreateUserHandler",
+                "Runtime": "java17",
+                "FunctionName": "reto-aws-serverless-users-dev-createUserJava",
+                "MemorySize": 256,
+                "Timeout": 30,
+                "Description": "Create a new user (Java implementation)",
+                "Environment": {
+                  "Variables": {
+                    "ENVIRONMENT": "dev"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "CreateUserJavaLogGroup"
+              ]
+            },
+            "GetUserJavaLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+                },
+                "Handler": "co.com.bancolombia.lambda.handler.GetUserHandler",
+                "Runtime": "java17",
+                "FunctionName": "reto-aws-serverless-users-dev-getUserJava",
+                "MemorySize": 256,
+                "Timeout": 30,
+                "Description": "Get user by ID (Java implementation)",
+                "Environment": {
+                  "Variables": {
+                    "ENVIRONMENT": "dev"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "GetUserJavaLogGroup"
+              ]
+            },
+            "UpdateUserJavaLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+                },
+                "Handler": "co.com.bancolombia.lambda.handler.UpdateUserHandler",
+                "Runtime": "java17",
+                "FunctionName": "reto-aws-serverless-users-dev-updateUserJava",
+                "MemorySize": 256,
+                "Timeout": 30,
+                "Description": "Update user by ID (Java implementation)",
+                "Environment": {
+                  "Variables": {
+                    "ENVIRONMENT": "dev"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "UpdateUserJavaLogGroup"
+              ]
+            },
+            "DeleteUserJavaLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+                },
+                "Handler": "co.com.bancolombia.lambda.handler.DeleteUserHandler",
+                "Runtime": "java17",
+                "FunctionName": "reto-aws-serverless-users-dev-deleteUserJava",
+                "MemorySize": 256,
+                "Timeout": 30,
+                "Description": "Delete user by ID (Java implementation)",
+                "Environment": {
+                  "Variables": {
+                    "ENVIRONMENT": "dev"
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "DeleteUserJavaLogGroup"
+              ]
+            },
+            "CreateUserJavaLambdaVersionQqrLeSVskOeF3xi0SZFnnbP5FRBmFdf1vbGy2vAk": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "CreateUserJavaLambdaFunction"
+                },
+                "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+                "Description": "Create a new user (Java implementation)"
+              }
+            },
+            "GetUserJavaLambdaVersion2VX0GOsKnGjTwR3h8BX7Nfu4ASOd34PfPalNDyEJQM": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "GetUserJavaLambdaFunction"
+                },
+                "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+                "Description": "Get user by ID (Java implementation)"
+              }
+            },
+            "UpdateUserJavaLambdaVersionM2vwzaioEWWLtoF0t1Bud9YsGiQxhxw8S51i2LoNI": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "UpdateUserJavaLambdaFunction"
+                },
+                "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+                "Description": "Update user by ID (Java implementation)"
+              }
+            },
+            "DeleteUserJavaLambdaVersionHEV20Tx37BD6FaZgS1t6WDTfS3qqdXKKVtdZoIiUYc": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "DeleteUserJavaLambdaFunction"
+                },
+                "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+                "Description": "Delete user by ID (Java implementation)"
+              }
+            },
+            "HttpApi": {
+              "Type": "AWS::ApiGatewayV2::Api",
+              "Properties": {
+                "Name": "dev-reto-aws-serverless-users",
+                "ProtocolType": "HTTP"
+              }
+            },
+            "HttpApiStage": {
+              "Type": "AWS::ApiGatewayV2::Stage",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "StageName": "$default",
+                "AutoDeploy": true,
+                "DefaultRouteSettings": {
+                  "DetailedMetricsEnabled": true
+                }
+              }
+            },
+            "CreateUserJavaLambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "CreateUserJavaLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationCreateUserJava": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "CreateUserJavaLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRoutePostApiServerlessUsers": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "POST /api/serverless/users",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationCreateUserJava"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationCreateUserJava"
+            },
+            "GetUserJavaLambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "GetUserJavaLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationGetUserJava": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "GetUserJavaLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRouteGetApiServerlessUsersIdVar": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "GET /api/serverless/users/{id}",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationGetUserJava"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationGetUserJava"
+            },
+            "UpdateUserJavaLambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "UpdateUserJavaLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationUpdateUserJava": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "UpdateUserJavaLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRoutePutApiServerlessUsersIdVar": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "PUT /api/serverless/users/{id}",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationUpdateUserJava"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationUpdateUserJava"
+            },
+            "DeleteUserJavaLambdaPermissionHttpApi": {
+              "Type": "AWS::Lambda::Permission",
+              "Properties": {
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "DeleteUserJavaLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Action": "lambda:InvokeFunction",
+                "Principal": "apigateway.amazonaws.com",
+                "SourceArn": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":execute-api:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId"
+                      },
+                      ":",
+                      {
+                        "Ref": "HttpApi"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              }
+            },
+            "HttpApiIntegrationDeleteUserJava": {
+              "Type": "AWS::ApiGatewayV2::Integration",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                  "Fn::GetAtt": [
+                    "DeleteUserJavaLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "TimeoutInMillis": 30000
+              }
+            },
+            "HttpApiRouteDeleteApiServerlessUsersIdVar": {
+              "Type": "AWS::ApiGatewayV2::Route",
+              "Properties": {
+                "ApiId": {
+                  "Ref": "HttpApi"
+                },
+                "RouteKey": "DELETE /api/serverless/users/{id}",
+                "Target": {
+                  "Fn::Join": [
+                    "/",
+                    [
+                      "integrations",
+                      {
+                        "Ref": "HttpApiIntegrationDeleteUserJava"
+                      }
+                    ]
+                  ]
+                }
+              },
+              "DependsOn": "HttpApiIntegrationDeleteUserJava"
+            }
+          },
+          "Outputs": {
+            "ServerlessDeploymentBucketName": {
+              "Value": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+              "Export": {
+                "Name": "sls-reto-aws-serverless-users-dev-ServerlessDeploymentBucketName"
+              }
+            },
+            "CreateUserJavaLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "CreateUserJavaLambdaVersionQqrLeSVskOeF3xi0SZFnnbP5FRBmFdf1vbGy2vAk"
+              },
+              "Export": {
+                "Name": "sls-reto-aws-serverless-users-dev-CreateUserJavaLambdaFunctionQualifiedArn"
+              }
+            },
+            "GetUserJavaLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "GetUserJavaLambdaVersion2VX0GOsKnGjTwR3h8BX7Nfu4ASOd34PfPalNDyEJQM"
+              },
+              "Export": {
+                "Name": "sls-reto-aws-serverless-users-dev-GetUserJavaLambdaFunctionQualifiedArn"
+              }
+            },
+            "UpdateUserJavaLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "UpdateUserJavaLambdaVersionM2vwzaioEWWLtoF0t1Bud9YsGiQxhxw8S51i2LoNI"
+              },
+              "Export": {
+                "Name": "sls-reto-aws-serverless-users-dev-UpdateUserJavaLambdaFunctionQualifiedArn"
+              }
+            },
+            "DeleteUserJavaLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "DeleteUserJavaLambdaVersionHEV20Tx37BD6FaZgS1t6WDTfS3qqdXKKVtdZoIiUYc"
+              },
+              "Export": {
+                "Name": "sls-reto-aws-serverless-users-dev-DeleteUserJavaLambdaFunctionQualifiedArn"
+              }
+            },
+            "HttpApiId": {
+              "Description": "Id of the HTTP API",
+              "Value": {
+                "Ref": "HttpApi"
+              },
+              "Export": {
+                "Name": "sls-reto-aws-serverless-users-dev-HttpApiId"
+              }
+            },
+            "HttpApiUrl": {
+              "Description": "URL of the HTTP API",
+              "Value": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "https://",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    ".execute-api.",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ".",
+                    {
+                      "Ref": "AWS::URLSuffix"
+                    }
+                  ]
+                ]
+              },
+              "Export": {
+                "Name": "sls-reto-aws-serverless-users-dev-HttpApiUrl"
+              }
+            }
+          }
+        },
+        "vpc": {}
+      },
+      "package": {
+        "individually": true,
+        "artifactsS3KeyDirname": "serverless/reto-aws-serverless-users/dev/code-artifacts",
+        "deploymentBucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+        "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z"
+      },
+      "functions": {
+        "createUserJava": {
+          "runtime": "java17",
+          "handler": "co.com.bancolombia.lambda.handler.CreateUserHandler",
+          "description": "Create a new user (Java implementation)",
+          "package": {
+            "artifact": "../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar"
+          },
+          "events": [
+            {
+              "httpApi": {
+                "path": "/api/serverless/users",
+                "method": "post"
+              },
+              "resolvedMethod": "POST",
+              "resolvedPath": "/api/serverless/users"
+            }
+          ],
+          "timeout": 30,
+          "memorySize": 256,
+          "name": "reto-aws-serverless-users-dev-createUserJava",
+          "memory": 256,
+          "vpc": {},
+          "versionLogicalId": "CreateUserJavaLambdaVersionQqrLeSVskOeF3xi0SZFnnbP5FRBmFdf1vbGy2vAk"
+        },
+        "getUserJava": {
+          "runtime": "java17",
+          "handler": "co.com.bancolombia.lambda.handler.GetUserHandler",
+          "description": "Get user by ID (Java implementation)",
+          "package": {
+            "artifact": "../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar"
+          },
+          "events": [
+            {
+              "httpApi": {
+                "path": "/api/serverless/users/{id}",
+                "method": "get"
+              },
+              "resolvedMethod": "GET",
+              "resolvedPath": "/api/serverless/users/{id}"
+            }
+          ],
+          "timeout": 30,
+          "memorySize": 256,
+          "name": "reto-aws-serverless-users-dev-getUserJava",
+          "memory": 256,
+          "vpc": {},
+          "versionLogicalId": "GetUserJavaLambdaVersion2VX0GOsKnGjTwR3h8BX7Nfu4ASOd34PfPalNDyEJQM"
+        },
+        "updateUserJava": {
+          "runtime": "java17",
+          "handler": "co.com.bancolombia.lambda.handler.UpdateUserHandler",
+          "description": "Update user by ID (Java implementation)",
+          "package": {
+            "artifact": "../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar"
+          },
+          "events": [
+            {
+              "httpApi": {
+                "path": "/api/serverless/users/{id}",
+                "method": "put"
+              },
+              "resolvedMethod": "PUT",
+              "resolvedPath": "/api/serverless/users/{id}"
+            }
+          ],
+          "timeout": 30,
+          "memorySize": 256,
+          "name": "reto-aws-serverless-users-dev-updateUserJava",
+          "memory": 256,
+          "vpc": {},
+          "versionLogicalId": "UpdateUserJavaLambdaVersionM2vwzaioEWWLtoF0t1Bud9YsGiQxhxw8S51i2LoNI"
+        },
+        "deleteUserJava": {
+          "runtime": "java17",
+          "handler": "co.com.bancolombia.lambda.handler.DeleteUserHandler",
+          "description": "Delete user by ID (Java implementation)",
+          "package": {
+            "artifact": "../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar"
+          },
+          "events": [
+            {
+              "httpApi": {
+                "path": "/api/serverless/users/{id}",
+                "method": "delete"
+              },
+              "resolvedMethod": "DELETE",
+              "resolvedPath": "/api/serverless/users/{id}"
+            }
+          ],
+          "timeout": 30,
+          "memorySize": 256,
+          "name": "reto-aws-serverless-users-dev-deleteUserJava",
+          "memory": 256,
+          "vpc": {},
+          "versionLogicalId": "DeleteUserJavaLambdaVersionHEV20Tx37BD6FaZgS1t6WDTfS3qqdXKKVtdZoIiUYc"
+        }
+      },
+      "resources": {
+        "Description": "HU7 Serverless CRUD Users API - Java Implementation",
+        "Resources": {},
+        "Outputs": {}
+      }
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "java17",
+      "region": "us-east-1",
+      "stage": "dev",
+      "environment": {
+        "ENVIRONMENT": "dev"
+      },
+      "httpApi": {
+        "metrics": true
+      },
+      "versionFunctions": true,
+      "compiledCloudFormationTemplate": {
+        "AWSTemplateFormatVersion": "2010-09-09",
+        "Description": "HU7 Serverless CRUD Users API - Java Implementation",
+        "Resources": {
+          "CreateUserJavaLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-createUserJava"
+            }
+          },
+          "GetUserJavaLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-getUserJava"
+            }
+          },
+          "UpdateUserJavaLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-updateUserJava"
+            }
+          },
+          "DeleteUserJavaLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-deleteUserJava"
+            }
+          },
+          "IamRoleLambdaExecution": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+              "AssumeRolePolicyDocument": {
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "Service": [
+                        "lambda.amazonaws.com"
+                      ]
+                    },
+                    "Action": [
+                      "sts:AssumeRole"
+                    ]
+                  }
+                ]
+              },
+              "Policies": [
+                {
+                  "PolicyName": {
+                    "Fn::Join": [
+                      "-",
+                      [
+                        "reto-aws-serverless-users",
+                        "dev",
+                        "lambda"
+                      ]
+                    ]
+                  },
+                  "PolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:CreateLogStream",
+                          "logs:CreateLogGroup",
+                          "logs:TagResource"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*"
+                          }
+                        ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "logs:PutLogEvents"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*:*"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ],
+              "Path": "/",
+              "RoleName": {
+                "Fn::Join": [
+                  "-",
+                  [
+                    "reto-aws-serverless-users",
+                    "dev",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    "lambdaRole"
+                  ]
+                ]
+              }
+            }
+          },
+          "CreateUserJavaLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+              },
+              "Handler": "co.com.bancolombia.lambda.handler.CreateUserHandler",
+              "Runtime": "java17",
+              "FunctionName": "reto-aws-serverless-users-dev-createUserJava",
+              "MemorySize": 256,
+              "Timeout": 30,
+              "Description": "Create a new user (Java implementation)",
+              "Environment": {
+                "Variables": {
+                  "ENVIRONMENT": "dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "CreateUserJavaLogGroup"
+            ]
+          },
+          "GetUserJavaLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+              },
+              "Handler": "co.com.bancolombia.lambda.handler.GetUserHandler",
+              "Runtime": "java17",
+              "FunctionName": "reto-aws-serverless-users-dev-getUserJava",
+              "MemorySize": 256,
+              "Timeout": 30,
+              "Description": "Get user by ID (Java implementation)",
+              "Environment": {
+                "Variables": {
+                  "ENVIRONMENT": "dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "GetUserJavaLogGroup"
+            ]
+          },
+          "UpdateUserJavaLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+              },
+              "Handler": "co.com.bancolombia.lambda.handler.UpdateUserHandler",
+              "Runtime": "java17",
+              "FunctionName": "reto-aws-serverless-users-dev-updateUserJava",
+              "MemorySize": 256,
+              "Timeout": 30,
+              "Description": "Update user by ID (Java implementation)",
+              "Environment": {
+                "Variables": {
+                  "ENVIRONMENT": "dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "UpdateUserJavaLogGroup"
+            ]
+          },
+          "DeleteUserJavaLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+              },
+              "Handler": "co.com.bancolombia.lambda.handler.DeleteUserHandler",
+              "Runtime": "java17",
+              "FunctionName": "reto-aws-serverless-users-dev-deleteUserJava",
+              "MemorySize": 256,
+              "Timeout": 30,
+              "Description": "Delete user by ID (Java implementation)",
+              "Environment": {
+                "Variables": {
+                  "ENVIRONMENT": "dev"
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "DeleteUserJavaLogGroup"
+            ]
+          },
+          "CreateUserJavaLambdaVersionQqrLeSVskOeF3xi0SZFnnbP5FRBmFdf1vbGy2vAk": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CreateUserJavaLambdaFunction"
+              },
+              "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+              "Description": "Create a new user (Java implementation)"
+            }
+          },
+          "GetUserJavaLambdaVersion2VX0GOsKnGjTwR3h8BX7Nfu4ASOd34PfPalNDyEJQM": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "GetUserJavaLambdaFunction"
+              },
+              "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+              "Description": "Get user by ID (Java implementation)"
+            }
+          },
+          "UpdateUserJavaLambdaVersionM2vwzaioEWWLtoF0t1Bud9YsGiQxhxw8S51i2LoNI": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UpdateUserJavaLambdaFunction"
+              },
+              "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+              "Description": "Update user by ID (Java implementation)"
+            }
+          },
+          "DeleteUserJavaLambdaVersionHEV20Tx37BD6FaZgS1t6WDTfS3qqdXKKVtdZoIiUYc": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "DeleteUserJavaLambdaFunction"
+              },
+              "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+              "Description": "Delete user by ID (Java implementation)"
+            }
+          },
+          "HttpApi": {
+            "Type": "AWS::ApiGatewayV2::Api",
+            "Properties": {
+              "Name": "dev-reto-aws-serverless-users",
+              "ProtocolType": "HTTP"
+            }
+          },
+          "HttpApiStage": {
+            "Type": "AWS::ApiGatewayV2::Stage",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "StageName": "$default",
+              "AutoDeploy": true,
+              "DefaultRouteSettings": {
+                "DetailedMetricsEnabled": true
+              }
+            }
+          },
+          "CreateUserJavaLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "CreateUserJavaLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationCreateUserJava": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "CreateUserJavaLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePostApiServerlessUsers": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /api/serverless/users",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationCreateUserJava"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationCreateUserJava"
+          },
+          "GetUserJavaLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "GetUserJavaLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationGetUserJava": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "GetUserJavaLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRouteGetApiServerlessUsersIdVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "GET /api/serverless/users/{id}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationGetUserJava"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationGetUserJava"
+          },
+          "UpdateUserJavaLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UpdateUserJavaLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationUpdateUserJava": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "UpdateUserJavaLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRoutePutApiServerlessUsersIdVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "PUT /api/serverless/users/{id}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationUpdateUserJava"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationUpdateUserJava"
+          },
+          "DeleteUserJavaLambdaPermissionHttpApi": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "DeleteUserJavaLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "HttpApi"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "HttpApiIntegrationDeleteUserJava": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "Fn::GetAtt": [
+                  "DeleteUserJavaLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 30000
+            }
+          },
+          "HttpApiRouteDeleteApiServerlessUsersIdVar": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "DELETE /api/serverless/users/{id}",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationDeleteUserJava"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationDeleteUserJava"
+          }
+        },
+        "Outputs": {
+          "ServerlessDeploymentBucketName": {
+            "Value": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-ServerlessDeploymentBucketName"
+            }
+          },
+          "CreateUserJavaLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CreateUserJavaLambdaVersionQqrLeSVskOeF3xi0SZFnnbP5FRBmFdf1vbGy2vAk"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-CreateUserJavaLambdaFunctionQualifiedArn"
+            }
+          },
+          "GetUserJavaLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "GetUserJavaLambdaVersion2VX0GOsKnGjTwR3h8BX7Nfu4ASOd34PfPalNDyEJQM"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-GetUserJavaLambdaFunctionQualifiedArn"
+            }
+          },
+          "UpdateUserJavaLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UpdateUserJavaLambdaVersionM2vwzaioEWWLtoF0t1Bud9YsGiQxhxw8S51i2LoNI"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-UpdateUserJavaLambdaFunctionQualifiedArn"
+            }
+          },
+          "DeleteUserJavaLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "DeleteUserJavaLambdaVersionHEV20Tx37BD6FaZgS1t6WDTfS3qqdXKKVtdZoIiUYc"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-DeleteUserJavaLambdaFunctionQualifiedArn"
+            }
+          },
+          "HttpApiId": {
+            "Description": "Id of the HTTP API",
+            "Value": {
+              "Ref": "HttpApi"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-HttpApiId"
+            }
+          },
+          "HttpApiUrl": {
+            "Description": "URL of the HTTP API",
+            "Value": {
+              "Fn::Join": [
+                "",
+                [
+                  "https://",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  ".execute-api.",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ".",
+                  {
+                    "Ref": "AWS::URLSuffix"
+                  }
+                ]
+              ]
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-HttpApiUrl"
+            }
+          }
+        }
+      },
+      "vpc": {}
+    },
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": false,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "serviceRawFile": "service: reto-aws-serverless-users\n\nframeworkVersion: '4'\n\nprovider:\n  name: aws\n  runtime: java17\n  region: ${env:AWS_REGION, 'us-east-1'}\n  stage: ${env:ENVIRONMENT, 'dev'}\n  environment:\n    ENVIRONMENT: ${env:ENVIRONMENT, 'dev'}\n  httpApi:\n    metrics: true\n\npackage:\n  individually: true\n\nfunctions:\n  createUserJava:\n    runtime: java17\n    handler: co.com.bancolombia.lambda.handler.CreateUserHandler\n    description: Create a new user (Java implementation)\n    package:\n      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar\n    events:\n      - httpApi:\n          path: /api/serverless/users\n          method: post\n    timeout: 30\n    memorySize: 256\n\n  getUserJava:\n    runtime: java17\n    handler: co.com.bancolombia.lambda.handler.GetUserHandler\n    description: Get user by ID (Java implementation)\n    package:\n      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar\n    events:\n      - httpApi:\n          path: /api/serverless/users/{id}\n          method: get\n    timeout: 30\n    memorySize: 256\n\n  updateUserJava:\n    runtime: java17\n    handler: co.com.bancolombia.lambda.handler.UpdateUserHandler\n    description: Update user by ID (Java implementation)\n    package:\n      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar\n    events:\n      - httpApi:\n          path: /api/serverless/users/{id}\n          method: put\n    timeout: 30\n    memorySize: 256\n\n  deleteUserJava:\n    runtime: java17\n    handler: co.com.bancolombia.lambda.handler.DeleteUserHandler\n    description: Delete user by ID (Java implementation)\n    package:\n      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar\n    events:\n      - httpApi:\n          path: /api/serverless/users/{id}\n          method: delete\n    timeout: 30\n    memorySize: 256\n\nresources:\n  Description: 'HU7 Serverless CRUD Users API - Java Implementation'\n",
+    "command": [
+      "deploy"
+    ],
+    "options": {
+      "stage": "dev",
+      "region": "us-east-1"
+    },
+    "orgId": "8ced6102-4a9e-4343-b891-41e724798c73",
+    "orgName": "sebastianbaezr",
+    "userId": "GbPJGfN2v9DvtHl0x9",
+    "userName": "sebastianbaezr",
+    "serviceProviderAwsAccountId": "041065662579",
+    "serviceProviderAwsCfStackName": "reto-aws-serverless-users-dev",
+    "serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-1:041065662579:stack/reto-aws-serverless-users-dev/61b7ab80-f7df-11f0-866b-12817cb06705",
+    "serviceProviderAwsCfStackCreated": "2026-01-22T22:12:03.922Z",
+    "serviceProviderAwsCfStackUpdated": "2026-01-23T14:48:51.211Z",
+    "serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
+    "serviceProviderAwsCfStackOutputs": [
+      {
+        "OutputKey": "UpdateUserNodeLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-updateUserNode:5",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-reto-aws-serverless-users-dev-UpdateUserNodeLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "GetUserNodeLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-getUserNode:5",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-reto-aws-serverless-users-dev-GetUserNodeLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "CreateUserNodeLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-createUserNode:5",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-reto-aws-serverless-users-dev-CreateUserNodeLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "DeleteUserNodeLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-deleteUserNode:5",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-reto-aws-serverless-users-dev-DeleteUserNodeLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "HttpApiId",
+        "OutputValue": "vra6s29twi",
+        "Description": "Id of the HTTP API",
+        "ExportName": "sls-reto-aws-serverless-users-dev-HttpApiId"
+      },
+      {
+        "OutputKey": "ServerlessDeploymentBucketName",
+        "OutputValue": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+        "ExportName": "sls-reto-aws-serverless-users-dev-ServerlessDeploymentBucketName"
+      },
+      {
+        "OutputKey": "HttpApiUrl",
+        "OutputValue": "https://vra6s29twi.execute-api.us-east-1.amazonaws.com",
+        "Description": "URL of the HTTP API",
+        "ExportName": "sls-reto-aws-serverless-users-dev-HttpApiUrl"
+      }
+    ],
+    "compiledCloudFormationTemplate": {
+      "AWSTemplateFormatVersion": "2010-09-09",
+      "Description": "HU7 Serverless CRUD Users API - Java Implementation",
+      "Resources": {
+        "CreateUserJavaLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-createUserJava"
+          }
+        },
+        "GetUserJavaLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-getUserJava"
+          }
+        },
+        "UpdateUserJavaLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-updateUserJava"
+          }
+        },
+        "DeleteUserJavaLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-deleteUserJava"
+          }
+        },
+        "IamRoleLambdaExecution": {
+          "Type": "AWS::IAM::Role",
+          "Properties": {
+            "AssumeRolePolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "Service": [
+                      "lambda.amazonaws.com"
+                    ]
+                  },
+                  "Action": [
+                    "sts:AssumeRole"
+                  ]
+                }
+              ]
+            },
+            "Policies": [
+              {
+                "PolicyName": {
+                  "Fn::Join": [
+                    "-",
+                    [
+                      "reto-aws-serverless-users",
+                      "dev",
+                      "lambda"
+                    ]
+                  ]
+                },
+                "PolicyDocument": {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:CreateLogStream",
+                        "logs:CreateLogGroup",
+                        "logs:TagResource"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*"
+                        }
+                      ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "logs:PutLogEvents"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*:*"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "Path": "/",
+            "RoleName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "reto-aws-serverless-users",
+                  "dev",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  "lambdaRole"
+                ]
+              ]
+            }
+          }
+        },
+        "CreateUserJavaLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+              "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+            },
+            "Handler": "co.com.bancolombia.lambda.handler.CreateUserHandler",
+            "Runtime": "java17",
+            "FunctionName": "reto-aws-serverless-users-dev-createUserJava",
+            "MemorySize": 256,
+            "Timeout": 30,
+            "Description": "Create a new user (Java implementation)",
+            "Environment": {
+              "Variables": {
+                "ENVIRONMENT": "dev"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "CreateUserJavaLogGroup"
+          ]
+        },
+        "GetUserJavaLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+              "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+            },
+            "Handler": "co.com.bancolombia.lambda.handler.GetUserHandler",
+            "Runtime": "java17",
+            "FunctionName": "reto-aws-serverless-users-dev-getUserJava",
+            "MemorySize": 256,
+            "Timeout": 30,
+            "Description": "Get user by ID (Java implementation)",
+            "Environment": {
+              "Variables": {
+                "ENVIRONMENT": "dev"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "GetUserJavaLogGroup"
+          ]
+        },
+        "UpdateUserJavaLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+              "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+            },
+            "Handler": "co.com.bancolombia.lambda.handler.UpdateUserHandler",
+            "Runtime": "java17",
+            "FunctionName": "reto-aws-serverless-users-dev-updateUserJava",
+            "MemorySize": 256,
+            "Timeout": 30,
+            "Description": "Update user by ID (Java implementation)",
+            "Environment": {
+              "Variables": {
+                "ENVIRONMENT": "dev"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "UpdateUserJavaLogGroup"
+          ]
+        },
+        "DeleteUserJavaLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+              "S3Key": "serverless/reto-aws-serverless-users/dev/1769180603690-2026-01-23T15:03:23.690Z/serverless-java-all.jar"
+            },
+            "Handler": "co.com.bancolombia.lambda.handler.DeleteUserHandler",
+            "Runtime": "java17",
+            "FunctionName": "reto-aws-serverless-users-dev-deleteUserJava",
+            "MemorySize": 256,
+            "Timeout": 30,
+            "Description": "Delete user by ID (Java implementation)",
+            "Environment": {
+              "Variables": {
+                "ENVIRONMENT": "dev"
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "DeleteUserJavaLogGroup"
+          ]
+        },
+        "CreateUserJavaLambdaVersionQqrLeSVskOeF3xi0SZFnnbP5FRBmFdf1vbGy2vAk": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "CreateUserJavaLambdaFunction"
+            },
+            "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+            "Description": "Create a new user (Java implementation)"
+          }
+        },
+        "GetUserJavaLambdaVersion2VX0GOsKnGjTwR3h8BX7Nfu4ASOd34PfPalNDyEJQM": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "GetUserJavaLambdaFunction"
+            },
+            "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+            "Description": "Get user by ID (Java implementation)"
+          }
+        },
+        "UpdateUserJavaLambdaVersionM2vwzaioEWWLtoF0t1Bud9YsGiQxhxw8S51i2LoNI": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "UpdateUserJavaLambdaFunction"
+            },
+            "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+            "Description": "Update user by ID (Java implementation)"
+          }
+        },
+        "DeleteUserJavaLambdaVersionHEV20Tx37BD6FaZgS1t6WDTfS3qqdXKKVtdZoIiUYc": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "DeleteUserJavaLambdaFunction"
+            },
+            "CodeSha256": "1rUa+SJAdZ3RYjuc7Jhu2cFkqvVT+j1hAkJfAXI8HEE=",
+            "Description": "Delete user by ID (Java implementation)"
+          }
+        },
+        "HttpApi": {
+          "Type": "AWS::ApiGatewayV2::Api",
+          "Properties": {
+            "Name": "dev-reto-aws-serverless-users",
+            "ProtocolType": "HTTP"
+          }
+        },
+        "HttpApiStage": {
+          "Type": "AWS::ApiGatewayV2::Stage",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "StageName": "$default",
+            "AutoDeploy": true,
+            "DefaultRouteSettings": {
+              "DetailedMetricsEnabled": true
+            }
+          }
+        },
+        "CreateUserJavaLambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "CreateUserJavaLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationCreateUserJava": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "CreateUserJavaLambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRoutePostApiServerlessUsers": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "POST /api/serverless/users",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationCreateUserJava"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationCreateUserJava"
+        },
+        "GetUserJavaLambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "GetUserJavaLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationGetUserJava": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "GetUserJavaLambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRouteGetApiServerlessUsersIdVar": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "GET /api/serverless/users/{id}",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationGetUserJava"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationGetUserJava"
+        },
+        "UpdateUserJavaLambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "UpdateUserJavaLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationUpdateUserJava": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "UpdateUserJavaLambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRoutePutApiServerlessUsersIdVar": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "PUT /api/serverless/users/{id}",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationUpdateUserJava"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationUpdateUserJava"
+        },
+        "DeleteUserJavaLambdaPermissionHttpApi": {
+          "Type": "AWS::Lambda::Permission",
+          "Properties": {
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "DeleteUserJavaLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Action": "lambda:InvokeFunction",
+            "Principal": "apigateway.amazonaws.com",
+            "SourceArn": {
+              "Fn::Join": [
+                "",
+                [
+                  "arn:",
+                  {
+                    "Ref": "AWS::Partition"
+                  },
+                  ":execute-api:",
+                  {
+                    "Ref": "AWS::Region"
+                  },
+                  ":",
+                  {
+                    "Ref": "AWS::AccountId"
+                  },
+                  ":",
+                  {
+                    "Ref": "HttpApi"
+                  },
+                  "/*"
+                ]
+              ]
+            }
+          }
+        },
+        "HttpApiIntegrationDeleteUserJava": {
+          "Type": "AWS::ApiGatewayV2::Integration",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "IntegrationType": "AWS_PROXY",
+            "IntegrationUri": {
+              "Fn::GetAtt": [
+                "DeleteUserJavaLambdaFunction",
+                "Arn"
+              ]
+            },
+            "PayloadFormatVersion": "2.0",
+            "TimeoutInMillis": 30000
+          }
+        },
+        "HttpApiRouteDeleteApiServerlessUsersIdVar": {
+          "Type": "AWS::ApiGatewayV2::Route",
+          "Properties": {
+            "ApiId": {
+              "Ref": "HttpApi"
+            },
+            "RouteKey": "DELETE /api/serverless/users/{id}",
+            "Target": {
+              "Fn::Join": [
+                "/",
+                [
+                  "integrations",
+                  {
+                    "Ref": "HttpApiIntegrationDeleteUserJava"
+                  }
+                ]
+              ]
+            }
+          },
+          "DependsOn": "HttpApiIntegrationDeleteUserJava"
+        }
+      },
+      "Outputs": {
+        "ServerlessDeploymentBucketName": {
+          "Value": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+          "Export": {
+            "Name": "sls-reto-aws-serverless-users-dev-ServerlessDeploymentBucketName"
+          }
+        },
+        "CreateUserJavaLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "CreateUserJavaLambdaVersionQqrLeSVskOeF3xi0SZFnnbP5FRBmFdf1vbGy2vAk"
+          },
+          "Export": {
+            "Name": "sls-reto-aws-serverless-users-dev-CreateUserJavaLambdaFunctionQualifiedArn"
+          }
+        },
+        "GetUserJavaLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "GetUserJavaLambdaVersion2VX0GOsKnGjTwR3h8BX7Nfu4ASOd34PfPalNDyEJQM"
+          },
+          "Export": {
+            "Name": "sls-reto-aws-serverless-users-dev-GetUserJavaLambdaFunctionQualifiedArn"
+          }
+        },
+        "UpdateUserJavaLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "UpdateUserJavaLambdaVersionM2vwzaioEWWLtoF0t1Bud9YsGiQxhxw8S51i2LoNI"
+          },
+          "Export": {
+            "Name": "sls-reto-aws-serverless-users-dev-UpdateUserJavaLambdaFunctionQualifiedArn"
+          }
+        },
+        "DeleteUserJavaLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "DeleteUserJavaLambdaVersionHEV20Tx37BD6FaZgS1t6WDTfS3qqdXKKVtdZoIiUYc"
+          },
+          "Export": {
+            "Name": "sls-reto-aws-serverless-users-dev-DeleteUserJavaLambdaFunctionQualifiedArn"
+          }
+        },
+        "HttpApiId": {
+          "Description": "Id of the HTTP API",
+          "Value": {
+            "Ref": "HttpApi"
+          },
+          "Export": {
+            "Name": "sls-reto-aws-serverless-users-dev-HttpApiId"
+          }
+        },
+        "HttpApiUrl": {
+          "Description": "URL of the HTTP API",
+          "Value": {
+            "Fn::Join": [
+              "",
+              [
+                "https://",
+                {
+                  "Ref": "HttpApi"
+                },
+                ".execute-api.",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ".",
+                {
+                  "Ref": "AWS::URLSuffix"
+                }
+              ]
+            ]
+          },
+          "Export": {
+            "Name": "sls-reto-aws-serverless-users-dev-HttpApiUrl"
+          }
+        }
+      }
+    }
+  }
+}

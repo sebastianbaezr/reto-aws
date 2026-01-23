@@ -1,0 +1,64 @@
+service: reto-aws-serverless-users
+
+frameworkVersion: '4'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: ${env:AWS_REGION, 'us-east-1'}
+  stage: ${env:ENVIRONMENT, 'dev'}
+  environment:
+    ENVIRONMENT: ${env:ENVIRONMENT, 'dev'}
+  httpApi:
+    metrics: true
+
+package:
+  individually: true
+
+functions:
+  createUserNode:
+    runtime: nodejs20.x
+    handler: src/handlers/createUser.createUser
+    description: Create a new user (Node.js implementation)
+    events:
+      - httpApi:
+          path: /api/serverless/users
+          method: post
+    timeout: 30
+    memorySize: 256
+
+  getUserNode:
+    runtime: nodejs20.x
+    handler: src/handlers/getUser.getUser
+    description: Get user by ID (Node.js implementation)
+    events:
+      - httpApi:
+          path: /api/serverless/users/{id}
+          method: get
+    timeout: 30
+    memorySize: 256
+
+  updateUserNode:
+    runtime: nodejs20.x
+    handler: src/handlers/updateUser.updateUser
+    description: Update user by ID (Node.js implementation)
+    events:
+      - httpApi:
+          path: /api/serverless/users/{id}
+          method: put
+    timeout: 30
+    memorySize: 256
+
+  deleteUserNode:
+    runtime: nodejs20.x
+    handler: src/handlers/deleteUser.deleteUser
+    description: Delete user by ID (Node.js implementation)
+    events:
+      - httpApi:
+          path: /api/serverless/users/{id}
+          method: delete
+    timeout: 30
+    memorySize: 256
+
+resources:
+  Description: 'HU7 Serverless CRUD Users API - Node.js Implementation'

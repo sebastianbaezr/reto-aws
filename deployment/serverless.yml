@@ -1,0 +1,72 @@
+service: reto-aws-serverless-users
+
+frameworkVersion: '4'
+
+provider:
+  name: aws
+  runtime: java17
+  region: ${env:AWS_REGION, 'us-east-1'}
+  stage: ${env:ENVIRONMENT, 'dev'}
+  environment:
+    ENVIRONMENT: ${env:ENVIRONMENT, 'dev'}
+  httpApi:
+    metrics: true
+
+package:
+  individually: true
+
+functions:
+  createUserJava:
+    runtime: java17
+    handler: co.com.bancolombia.lambda.handler.CreateUserHandler
+    description: Create a new user (Java implementation)
+    package:
+      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar
+    events:
+      - httpApi:
+          path: /api/serverless/users
+          method: post
+    timeout: 30
+    memorySize: 256
+
+  getUserJava:
+    runtime: java17
+    handler: co.com.bancolombia.lambda.handler.GetUserHandler
+    description: Get user by ID (Java implementation)
+    package:
+      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar
+    events:
+      - httpApi:
+          path: /api/serverless/users/{id}
+          method: get
+    timeout: 30
+    memorySize: 256
+
+  updateUserJava:
+    runtime: java17
+    handler: co.com.bancolombia.lambda.handler.UpdateUserHandler
+    description: Update user by ID (Java implementation)
+    package:
+      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar
+    events:
+      - httpApi:
+          path: /api/serverless/users/{id}
+          method: put
+    timeout: 30
+    memorySize: 256
+
+  deleteUserJava:
+    runtime: java17
+    handler: co.com.bancolombia.lambda.handler.DeleteUserHandler
+    description: Delete user by ID (Java implementation)
+    package:
+      artifact: ../infrastructure/lambda/serverless-java/build/libs/serverless-java-all.jar
+    events:
+      - httpApi:
+          path: /api/serverless/users/{id}
+          method: delete
+    timeout: 30
+    memorySize: 256
+
+resources:
+  Description: 'HU7 Serverless CRUD Users API - Java Implementation'
