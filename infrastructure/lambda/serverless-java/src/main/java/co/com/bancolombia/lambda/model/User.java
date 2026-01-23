@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class User {
-    private Long id;
+    private String id;
     private String nombre;
     private String email;
 }

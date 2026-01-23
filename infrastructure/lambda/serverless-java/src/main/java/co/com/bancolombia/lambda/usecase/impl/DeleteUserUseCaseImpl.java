@@ -13,7 +13,7 @@ public class DeleteUserUseCaseImpl implements DeleteUserUseCase {
     }
 
     @Override
-    public void execute(Long userId) {
+    public void execute(String userId) {
         repository.findById(userId)
                 .orElseThrow(() -> new LambdaException("User not found with ID: " + userId, 404));
 

@@ -32,7 +32,7 @@ public class DeleteUserHandler extends AbstractLambdaHandler {
     protected LambdaResponse processRequest(Map<String, Object> input, Context context) {
         context.getLogger().log("Deleting user");
 
-        Long userId = extractUserId(input);
+        String userId = extractUserId(input);
         deleteUserUseCase.execute(userId);
 
         return new LambdaResponse(200,

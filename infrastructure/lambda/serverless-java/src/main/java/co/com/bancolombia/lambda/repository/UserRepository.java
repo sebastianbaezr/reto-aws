@@ -7,13 +7,13 @@ public interface UserRepository {
 
     User create(User user);
 
-    Optional<User> findById(Long id);
+    Optional<User> findById(String id);
 
-    User update(Long id, User user);
+    User update(String id, User user);
 
-    void delete(Long id);
+    void delete(String id);
 
     boolean emailExists(String email);
 
-    boolean emailExistsExcept(String email, Long excludeId);
+    boolean emailExistsExcept(String email, String excludeId);
 }

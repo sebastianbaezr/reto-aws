@@ -14,7 +14,7 @@ async function createUser(event, context) {
       return errorResponse(400, 'Nombre and email are required');
     }
 
-    const user = userService.createUser(body.nombre, body.email);
+    const user = await userService.createUser(body.nombre, body.email);
     return successResponse(201, user);
   } catch (error) {
     return handleError(error);

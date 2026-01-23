@@ -14,7 +14,7 @@ public class GetUserUseCaseImpl implements GetUserUseCase {
     }
 
     @Override
-    public User execute(Long userId) {
+    public User execute(String userId) {
         return repository.findById(userId)
                 .orElseThrow(() -> new LambdaException("User not found with ID: " + userId, 404));
     }

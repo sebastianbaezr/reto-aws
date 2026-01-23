@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class UserResponseDto {
-    private Long id;
+    private String id;
     private String nombre;
     private String email;
 }

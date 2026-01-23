@@ -15,7 +15,7 @@ public class UpdateUserUseCaseImpl implements UpdateUserUseCase {
     }
 
     @Override
-    public User execute(Long userId, User user) {
+    public User execute(String userId, User user) {
         repository.findById(userId)
                 .orElseThrow(() -> new LambdaException("User not found with ID: " + userId, 404));
 

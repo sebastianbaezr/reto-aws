@@ -10,15 +10,36 @@
       "region": "us-east-1",
       "stage": "dev",
       "environment": {
-        "ENVIRONMENT": "dev"
+        "ENVIRONMENT": "dev",
+        "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
       },
       "httpApi": {
         "metrics": true
       },
+      "iam": {
+        "role": {
+          "statements": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:PutItem",
+                "dynamodb:GetItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:Query"
+              ],
+              "Resource": [
+                "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev",
+                "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev/index/email-index"
+              ]
+            }
+          ]
+        }
+      },
       "versionFunctions": true,
       "compiledCloudFormationTemplate": {
         "AWSTemplateFormatVersion": "2010-09-09",
-        "Description": "HU7 Serverless CRUD Users API - Node.js Implementation",
+        "Description": "The AWS CloudFormation template for this Serverless application",
         "Resources": {
           "CreateUserNodeLogGroup": {
             "Type": "AWS::Logs::LogGroup",
@@ -101,6 +122,9 @@
                             "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*:*"
                           }
                         ]
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][0]"
                       }
                     ]
                   }
@@ -127,7 +151,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z/createUserNode.zip"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z/createUserNode.zip"
               },
               "Handler": "src/handlers/createUser.createUser",
               "Runtime": "nodejs20.x",
@@ -137,7 +161,8 @@
               "Description": "Create a new user (Node.js implementation)",
               "Environment": {
                 "Variables": {
-                  "ENVIRONMENT": "dev"
+                  "ENVIRONMENT": "dev",
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
                 }
               },
               "Role": {
@@ -156,7 +181,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z/getUserNode.zip"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z/getUserNode.zip"
               },
               "Handler": "src/handlers/getUser.getUser",
               "Runtime": "nodejs20.x",
@@ -166,7 +191,8 @@
               "Description": "Get user by ID (Node.js implementation)",
               "Environment": {
                 "Variables": {
-                  "ENVIRONMENT": "dev"
+                  "ENVIRONMENT": "dev",
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
                 }
               },
               "Role": {
@@ -185,7 +211,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z/updateUserNode.zip"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z/updateUserNode.zip"
               },
               "Handler": "src/handlers/updateUser.updateUser",
               "Runtime": "nodejs20.x",
@@ -195,7 +221,8 @@
               "Description": "Update user by ID (Node.js implementation)",
               "Environment": {
                 "Variables": {
-                  "ENVIRONMENT": "dev"
+                  "ENVIRONMENT": "dev",
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
                 }
               },
               "Role": {
@@ -214,7 +241,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z/deleteUserNode.zip"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z/deleteUserNode.zip"
               },
               "Handler": "src/handlers/deleteUser.deleteUser",
               "Runtime": "nodejs20.x",
@@ -224,7 +251,8 @@
               "Description": "Delete user by ID (Node.js implementation)",
               "Environment": {
                 "Variables": {
-                  "ENVIRONMENT": "dev"
+                  "ENVIRONMENT": "dev",
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
                 }
               },
               "Role": {
@@ -238,47 +266,47 @@
               "DeleteUserNodeLogGroup"
             ]
           },
-          "CreateUserNodeLambdaVersionb7fYyTkheCgd48BLba4Mc6tD8vE0uvObockzpII6KI": {
+          "CreateUserNodeLambdaVersion1SiFIAKpDAD7tVZwVVRWyV2OVMgDM0VCEKbDTc": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateUserNodeLambdaFunction"
               },
-              "CodeSha256": "4XGB5Xq4e+owW84TNVxdK/AnLQIaEn9XKegEf8IYeGo=",
+              "CodeSha256": "wymbwQ7exbxs56bkwVX7PpBwIa2JK8QWcJ2P4gEk2hk=",
               "Description": "Create a new user (Node.js implementation)"
             }
           },
-          "DeleteUserNodeLambdaVersionQfRcssBiuEvjV8DMXd8W5cNiZz3IeV9FhdXwL8JitcQ": {
+          "DeleteUserNodeLambdaVersionFjfLtWVfsu9EQiQOVdnnEqo8OJzlRGYeCfV4wfGKWw": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DeleteUserNodeLambdaFunction"
               },
-              "CodeSha256": "4XGB5Xq4e+owW84TNVxdK/AnLQIaEn9XKegEf8IYeGo=",
+              "CodeSha256": "wymbwQ7exbxs56bkwVX7PpBwIa2JK8QWcJ2P4gEk2hk=",
               "Description": "Delete user by ID (Node.js implementation)"
             }
           },
-          "GetUserNodeLambdaVersionMT8r7ln58ozMAuOBtLFZ2rXaAQiv5nIZO39u7V6Rxk": {
+          "GetUserNodeLambdaVersionCebl5BbJJna3F9TT8xvlet2efI3o8GxOtmcalvDjo": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetUserNodeLambdaFunction"
               },
-              "CodeSha256": "4XGB5Xq4e+owW84TNVxdK/AnLQIaEn9XKegEf8IYeGo=",
+              "CodeSha256": "wymbwQ7exbxs56bkwVX7PpBwIa2JK8QWcJ2P4gEk2hk=",
               "Description": "Get user by ID (Node.js implementation)"
             }
           },
-          "UpdateUserNodeLambdaVersioncMptFd1HiREhRmelGs90BUh70vEjHGOi3vGwLOVIQ1o": {
+          "UpdateUserNodeLambdaVersionX3feitlaX0Kf7bZRMNwMHjzNTjr4WmRXYOuoqXymqmY": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UpdateUserNodeLambdaFunction"
               },
-              "CodeSha256": "4XGB5Xq4e+owW84TNVxdK/AnLQIaEn9XKegEf8IYeGo=",
+              "CodeSha256": "wymbwQ7exbxs56bkwVX7PpBwIa2JK8QWcJ2P4gEk2hk=",
               "Description": "Update user by ID (Node.js implementation)"
             }
           },
@@ -601,7 +629,7 @@
           "CreateUserNodeLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateUserNodeLambdaVersionb7fYyTkheCgd48BLba4Mc6tD8vE0uvObockzpII6KI"
+              "Ref": "CreateUserNodeLambdaVersion1SiFIAKpDAD7tVZwVVRWyV2OVMgDM0VCEKbDTc"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-CreateUserNodeLambdaFunctionQualifiedArn"
@@ -610,7 +638,7 @@
           "DeleteUserNodeLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DeleteUserNodeLambdaVersionQfRcssBiuEvjV8DMXd8W5cNiZz3IeV9FhdXwL8JitcQ"
+              "Ref": "DeleteUserNodeLambdaVersionFjfLtWVfsu9EQiQOVdnnEqo8OJzlRGYeCfV4wfGKWw"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-DeleteUserNodeLambdaFunctionQualifiedArn"
@@ -619,7 +647,7 @@
           "GetUserNodeLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetUserNodeLambdaVersionMT8r7ln58ozMAuOBtLFZ2rXaAQiv5nIZO39u7V6Rxk"
+              "Ref": "GetUserNodeLambdaVersionCebl5BbJJna3F9TT8xvlet2efI3o8GxOtmcalvDjo"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-GetUserNodeLambdaFunctionQualifiedArn"
@@ -628,7 +656,7 @@
           "UpdateUserNodeLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdateUserNodeLambdaVersioncMptFd1HiREhRmelGs90BUh70vEjHGOi3vGwLOVIQ1o"
+              "Ref": "UpdateUserNodeLambdaVersionX3feitlaX0Kf7bZRMNwMHjzNTjr4WmRXYOuoqXymqmY"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-UpdateUserNodeLambdaFunctionQualifiedArn"
@@ -696,7 +724,7 @@
         },
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "CreateUserNodeLambdaVersionb7fYyTkheCgd48BLba4Mc6tD8vE0uvObockzpII6KI"
+        "versionLogicalId": "CreateUserNodeLambdaVersion1SiFIAKpDAD7tVZwVVRWyV2OVMgDM0VCEKbDTc"
       },
       "getUserNode": {
         "runtime": "nodejs20.x",
@@ -720,7 +748,7 @@
         },
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "GetUserNodeLambdaVersionMT8r7ln58ozMAuOBtLFZ2rXaAQiv5nIZO39u7V6Rxk"
+        "versionLogicalId": "GetUserNodeLambdaVersionCebl5BbJJna3F9TT8xvlet2efI3o8GxOtmcalvDjo"
       },
       "updateUserNode": {
         "runtime": "nodejs20.x",
@@ -744,7 +772,7 @@
         },
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "UpdateUserNodeLambdaVersioncMptFd1HiREhRmelGs90BUh70vEjHGOi3vGwLOVIQ1o"
+        "versionLogicalId": "UpdateUserNodeLambdaVersionX3feitlaX0Kf7bZRMNwMHjzNTjr4WmRXYOuoqXymqmY"
       },
       "deleteUserNode": {
         "runtime": "nodejs20.x",
@@ -768,13 +796,8 @@
         },
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "DeleteUserNodeLambdaVersionQfRcssBiuEvjV8DMXd8W5cNiZz3IeV9FhdXwL8JitcQ"
+        "versionLogicalId": "DeleteUserNodeLambdaVersionFjfLtWVfsu9EQiQOVdnnEqo8OJzlRGYeCfV4wfGKWw"
       }
-    },
-    "resources": {
-      "Description": "HU7 Serverless CRUD Users API - Node.js Implementation",
-      "Resources": {},
-      "Outputs": {}
     },
     "configValidationMode": "warn",
     "serviceFilename": "serverless",
@@ -788,13 +811,10 @@
         "individually": true,
         "artifactsS3KeyDirname": "serverless/reto-aws-serverless-users/dev/code-artifacts",
         "deploymentBucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-        "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z"
+        "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z"
       },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
-      },
-      "resources": {
-        "$ref": "$[\"service\"][\"resources\"]"
       }
     },
     "appId": null,
@@ -803,7 +823,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769179720937-2026-01-23T14:48:40.937Z",
+    "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z",
     "artifact": ""
   }
 }

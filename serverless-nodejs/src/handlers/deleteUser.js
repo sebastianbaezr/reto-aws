@@ -15,12 +15,7 @@ async function deleteUser(event, context) {
       return errorResponse(400, 'User ID is required');
     }
 
-    const id = parseInt(userId, 10);
-    if (isNaN(id)) {
-      return errorResponse(400, 'User ID must be a number');
-    }
-
-    const result = userService.deleteUser(id);
+    const result = await userService.deleteUser(userId);
     return messageResponse(200, result.message);
   } catch (error) {
     return handleError(error);

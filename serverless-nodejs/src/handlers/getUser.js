@@ -15,12 +15,7 @@ async function getUser(event, context) {
       return errorResponse(400, 'User ID is required');
     }
 
-    const id = parseInt(userId, 10);
-    if (isNaN(id)) {
-      return errorResponse(400, 'User ID must be a number');
-    }
-
-    const user = userService.getUser(id);
+    const user = await userService.getUser(userId);
     return successResponse(200, user);
   } catch (error) {
     return handleError(error);

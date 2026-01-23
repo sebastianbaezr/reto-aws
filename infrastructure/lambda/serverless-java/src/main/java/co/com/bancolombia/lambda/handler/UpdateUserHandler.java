@@ -44,7 +44,7 @@ public class UpdateUserHandler extends AbstractLambdaHandler {
     protected LambdaResponse processRequest(Map<String, Object> input, Context context) {
         context.getLogger().log("Updating user");
 
-        Long userId = extractUserId(input);
+        String userId = extractUserId(input);
         String body = extractBody(input);
 
         UserRequestDto requestDto = jsonSerializer.fromJson(body, UserRequestDto.class);

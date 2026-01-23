@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "HU7 Serverless CRUD Users API - Java Implementation",
+  "Description": "The AWS CloudFormation template for this Serverless application",
   "Resources": {
     "CreateUserJavaLogGroup": {
       "Type": "AWS::Logs::LogGroup",
@@ -83,6 +83,21 @@
                       "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*:*"
                     }
                   ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:PutItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:UpdateItem",
+                    "dynamodb:DeleteItem",
+                    "dynamodb:Query",
+                    "dynamodb:Scan"
+                  ],
+                  "Resource": [
+                    "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev",
+                    "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev/index/email-index"
+                  ]
                 }
               ]
             }
@@ -109,7 +124,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-          "S3Key": "serverless/reto-aws-serverless-users/dev/1769186443499-2026-01-23T16:40:43.499Z/serverless-java-all.jar"
+          "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
         },
         "Handler": "co.com.bancolombia.lambda.handler.CreateUserHandler",
         "Runtime": "java17",
@@ -119,7 +134,8 @@
         "Description": "Create a new user (Java implementation)",
         "Environment": {
           "Variables": {
-            "ENVIRONMENT": "dev"
+            "ENVIRONMENT": "dev",
+            "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
           }
         },
         "Role": {
@@ -138,7 +154,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-          "S3Key": "serverless/reto-aws-serverless-users/dev/1769186443499-2026-01-23T16:40:43.499Z/serverless-java-all.jar"
+          "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
         },
         "Handler": "co.com.bancolombia.lambda.handler.GetUserHandler",
         "Runtime": "java17",
@@ -148,7 +164,8 @@
         "Description": "Get user by ID (Java implementation)",
         "Environment": {
           "Variables": {
-            "ENVIRONMENT": "dev"
+            "ENVIRONMENT": "dev",
+            "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
           }
         },
         "Role": {
@@ -167,7 +184,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-          "S3Key": "serverless/reto-aws-serverless-users/dev/1769186443499-2026-01-23T16:40:43.499Z/serverless-java-all.jar"
+          "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
         },
         "Handler": "co.com.bancolombia.lambda.handler.UpdateUserHandler",
         "Runtime": "java17",
@@ -177,7 +194,8 @@
         "Description": "Update user by ID (Java implementation)",
         "Environment": {
           "Variables": {
-            "ENVIRONMENT": "dev"
+            "ENVIRONMENT": "dev",
+            "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
           }
         },
         "Role": {
@@ -196,7 +214,7 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-          "S3Key": "serverless/reto-aws-serverless-users/dev/1769186443499-2026-01-23T16:40:43.499Z/serverless-java-all.jar"
+          "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
         },
         "Handler": "co.com.bancolombia.lambda.handler.DeleteUserHandler",
         "Runtime": "java17",
@@ -206,7 +224,8 @@
         "Description": "Delete user by ID (Java implementation)",
         "Environment": {
           "Variables": {
-            "ENVIRONMENT": "dev"
+            "ENVIRONMENT": "dev",
+            "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
           }
         },
         "Role": {
@@ -220,47 +239,47 @@
         "DeleteUserJavaLogGroup"
       ]
     },
-    "CreateUserJavaLambdaVersionDl1XNikAgakdhR5DuiRTTZJEC0PTzY5BuuqIrExxX9E": {
+    "CreateUserJavaLambdaVersionMn6OJeHqnpvmAhL4124aBAFoCR1FU8oKwxJSYJB4aMk": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "CreateUserJavaLambdaFunction"
         },
-        "CodeSha256": "mfKjC3USTVMlRP3QvJ/V/AKdYgKXc9cI475nnZDT74o=",
+        "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
         "Description": "Create a new user (Java implementation)"
       }
     },
-    "GetUserJavaLambdaVersionBeDxA9Z1ZQmQioqUqQtnKmI1FvAABLyLlW0git2c": {
+    "GetUserJavaLambdaVersion00xjBVwcIUPTP0HYBQEF68GsxEAuyf8Zwsisburg": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetUserJavaLambdaFunction"
         },
-        "CodeSha256": "mfKjC3USTVMlRP3QvJ/V/AKdYgKXc9cI475nnZDT74o=",
+        "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
         "Description": "Get user by ID (Java implementation)"
       }
     },
-    "UpdateUserJavaLambdaVersionBK3uFdS5ce5mCMx7BkL3lXk3B9Qzz3TGeXa99XCU": {
+    "UpdateUserJavaLambdaVersion10cchSqWstEUD5HqkxEnoPu9i7aiPOZJRiCl2GTZk90": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "UpdateUserJavaLambdaFunction"
         },
-        "CodeSha256": "mfKjC3USTVMlRP3QvJ/V/AKdYgKXc9cI475nnZDT74o=",
+        "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
         "Description": "Update user by ID (Java implementation)"
       }
     },
-    "DeleteUserJavaLambdaVersionuWqiaCFwNp39f0Y1gbO30gBGc54wIiTGmMVMfaVM": {
+    "DeleteUserJavaLambdaVersionIakjwREtCPZQTOFEsNeneR5dAmkzN9wyhso5cKlJtc": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "DeleteUserJavaLambdaFunction"
         },
-        "CodeSha256": "mfKjC3USTVMlRP3QvJ/V/AKdYgKXc9cI475nnZDT74o=",
+        "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
         "Description": "Delete user by ID (Java implementation)"
       }
     },
@@ -595,7 +614,7 @@
     "CreateUserJavaLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CreateUserJavaLambdaVersionDl1XNikAgakdhR5DuiRTTZJEC0PTzY5BuuqIrExxX9E"
+        "Ref": "CreateUserJavaLambdaVersionMn6OJeHqnpvmAhL4124aBAFoCR1FU8oKwxJSYJB4aMk"
       },
       "Export": {
         "Name": "sls-reto-aws-serverless-users-dev-CreateUserJavaLambdaFunctionQualifiedArn"
@@ -604,7 +623,7 @@
     "GetUserJavaLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetUserJavaLambdaVersionBeDxA9Z1ZQmQioqUqQtnKmI1FvAABLyLlW0git2c"
+        "Ref": "GetUserJavaLambdaVersion00xjBVwcIUPTP0HYBQEF68GsxEAuyf8Zwsisburg"
       },
       "Export": {
         "Name": "sls-reto-aws-serverless-users-dev-GetUserJavaLambdaFunctionQualifiedArn"
@@ -613,7 +632,7 @@
     "UpdateUserJavaLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "UpdateUserJavaLambdaVersionBK3uFdS5ce5mCMx7BkL3lXk3B9Qzz3TGeXa99XCU"
+        "Ref": "UpdateUserJavaLambdaVersion10cchSqWstEUD5HqkxEnoPu9i7aiPOZJRiCl2GTZk90"
       },
       "Export": {
         "Name": "sls-reto-aws-serverless-users-dev-UpdateUserJavaLambdaFunctionQualifiedArn"
@@ -622,7 +641,7 @@
     "DeleteUserJavaLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "DeleteUserJavaLambdaVersionuWqiaCFwNp39f0Y1gbO30gBGc54wIiTGmMVMfaVM"
+        "Ref": "DeleteUserJavaLambdaVersionIakjwREtCPZQTOFEsNeneR5dAmkzN9wyhso5cKlJtc"
       },
       "Export": {
         "Name": "sls-reto-aws-serverless-users-dev-DeleteUserJavaLambdaFunctionQualifiedArn"

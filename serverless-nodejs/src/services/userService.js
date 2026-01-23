@@ -7,7 +7,7 @@ class UserService {
     this.repository = getUserRepository();
   }
 
-  createUser(nombre, email) {
+  async createUser(nombre, email) {
     // Validate input
     if (!nombre || typeof nombre !== 'string' || nombre.trim() === '') {
       throw new BadRequestError('Nombre is required');
@@ -21,24 +21,24 @@ class UserService {
       throw new BadRequestError('Invalid email format');
     }
 
-    if (this.repository.emailExists(email)) {
+    if (await this.repository.emailExists(email)) {
       throw new BadRequestError(`Email already exists: ${email}`);
     }
 
-    return this.repository.create(nombre, email);
+    return await this.repository.create(nombre, email);
   }
 
-  getUser(userId) {
-    const user = this.repository.findById(userId);
+  async getUser(userId) {
+    const user = await this.repository.findById(userId);
     if (!user) {
       throw new NotFoundError(`User not found with ID: ${userId}`);
     }
     return user;
   }
 
-  updateUser(userId, nombre, email) {
+  async updateUser(userId, nombre, email) {
     // Verify user exists
-    const existingUser = this.repository.findById(userId);
+    const existingUser = await this.repository.findById(userId);
     if (!existingUser) {
       throw new NotFoundError(`User not found with ID: ${userId}`);
     }
@@ -56,20 +56,20 @@ class UserService {
       throw new BadRequestError('Invalid email format');
     }
 
-    if (this.repository.emailExistsExcept(email, userId)) {
+    if (await this.repository.emailExistsExcept(email, userId)) {
       throw new BadRequestError(`Email already exists: ${email}`);
     }
 
-    return this.repository.update(userId, nombre, email);
+    return await this.repository.update(userId, nombre, email);
   }
 
-  deleteUser(userId) {
-    const user = this.repository.findById(userId);
+  async deleteUser(userId) {
+    const user = await this.repository.findById(userId);
     if (!user) {
       throw new NotFoundError(`User not found with ID: ${userId}`);
     }
 
-    this.repository.delete(userId);
+    await this.repository.delete(userId);
     return { message: 'User deleted successfully' };
   }
 }

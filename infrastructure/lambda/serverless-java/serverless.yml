@@ -9,8 +9,23 @@ provider:
   stage: ${env:ENVIRONMENT, 'dev'}
   environment:
     ENVIRONMENT: ${env:ENVIRONMENT, 'dev'}
+    DYNAMODB_TABLE_NAME: ${self:service}-${self:provider.stage}
   httpApi:
     metrics: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Query
+            - dynamodb:Scan
+          Resource:
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME}
+            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME}/index/email-index
 
 package:
   individually: true
@@ -68,5 +83,3 @@ functions:
     timeout: 30
     memorySize: 256
 
-resources:
-  Description: 'HU7 Serverless CRUD Users API - Java Implementation'

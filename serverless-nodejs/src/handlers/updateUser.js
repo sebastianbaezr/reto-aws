@@ -15,18 +15,13 @@ async function updateUser(event, context) {
       return errorResponse(400, 'User ID is required');
     }
 
-    const id = parseInt(userId, 10);
-    if (isNaN(id)) {
-      return errorResponse(400, 'User ID must be a number');
-    }
-
     const body = event.body ? JSON.parse(event.body) : {};
 
     if (!body.nombre || !body.email) {
       return errorResponse(400, 'Nombre and email are required');
     }
 
-    const user = userService.updateUser(id, body.nombre, body.email);
+    const user = await userService.updateUser(userId, body.nombre, body.email);
     return successResponse(200, user);
   } catch (error) {
     return handleError(error);

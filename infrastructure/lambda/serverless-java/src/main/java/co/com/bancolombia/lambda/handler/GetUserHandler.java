@@ -38,7 +38,7 @@ public class GetUserHandler extends AbstractLambdaHandler {
     protected LambdaResponse processRequest(Map<String, Object> input, Context context) {
         context.getLogger().log("Getting user by ID");
 
-        Long userId = extractUserId(input);
+        String userId = extractUserId(input);
         User user = getUserUseCase.execute(userId);
 
         return new LambdaResponse(200,

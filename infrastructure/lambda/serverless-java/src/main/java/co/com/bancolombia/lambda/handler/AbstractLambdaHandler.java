@@ -41,7 +41,7 @@ public abstract class AbstractLambdaHandler implements RequestHandler<Map<String
 
     protected abstract LambdaResponse processRequest(Map<String, Object> input, Context context);
 
-    protected Long extractUserId(Map<String, Object> input) {
+    protected String extractUserId(Map<String, Object> input) {
         @SuppressWarnings("unchecked")
         Map<String, String> pathParameters = (Map<String, String>) input.get("pathParameters");
 
@@ -49,11 +49,11 @@ public abstract class AbstractLambdaHandler implements RequestHandler<Map<String
             throw new LambdaException("User ID is required", 400);
         }
 
-        try {
-            return Long.parseLong(pathParameters.get("id"));
-        } catch (NumberFormatException e) {
-            throw new LambdaException("User ID must be a number", 400);
+        String id = pathParameters.get("id");
+        if (id == null || id.trim().isEmpty()) {
+            throw new LambdaException("User ID cannot be empty", 400);
         }
+        return id;
     }
 
     protected String extractBody(Map<String, Object> input) {

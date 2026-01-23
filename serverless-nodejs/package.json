@@ -19,7 +19,11 @@
   ],
   "author": "Bancolombia",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.450.0",
+    "@aws-sdk/lib-dynamodb": "^3.450.0",
+    "uuid": "^9.0.1"
+  },
   "devDependencies": {
     "jest": "^29.7.0"
   },
