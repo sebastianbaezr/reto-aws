@@ -8,6 +8,7 @@ import co.com.bancolombia.lambda.mapper.UserMapper;
 import co.com.bancolombia.lambda.model.User;
 import co.com.bancolombia.lambda.response.ResponseFactory;
 import co.com.bancolombia.lambda.serialization.JsonSerializer;
+import co.com.bancolombia.lambda.service.SqsMessagePublisher;
 import co.com.bancolombia.lambda.usecase.CreateUserUseCase;
 import co.com.bancolombia.lambda.validation.ValidationService;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -42,15 +43,19 @@ class CreateUserHandlerTest {
     private UserMapper userMapper;
     @Mock
     private ValidationService validationService;
+    @Mock
+    private SqsMessagePublisher sqsMessagePublisher;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         LambdaLogger logger = mock(LambdaLogger.class);
         when(context.getLogger()).thenReturn(logger);
-        
-        handler = new CreateUserHandler(jsonSerializer, responseFactory, 
-                createUserUseCase, userMapper, validationService);
+        when(context.getAwsRequestId()).thenReturn("test-request-id");
+        when(sqsMessagePublisher.publishUserCreatedEvent(any(), anyString())).thenReturn(null);
+
+        handler = new CreateUserHandler(jsonSerializer, responseFactory,
+                createUserUseCase, userMapper, validationService, sqsMessagePublisher);
     }
 
     @Test
@@ -69,12 +74,12 @@ class CreateUserHandlerTest {
                 .email("newuser@test.com")
                 .build();
         User createdUser = User.builder()
-                .id(1L)
+                .id("550e8400-e29b-41d4-a716-446655440000")
                 .nombre("New User")
                 .email("newuser@test.com")
                 .build();
         UserResponseDto responseDto = UserResponseDto.builder()
-                .id(1L)
+                .id("550e8400-e29b-41d4-a716-446655440000")
                 .nombre("New User")
                 .email("newuser@test.com")
                 .build();

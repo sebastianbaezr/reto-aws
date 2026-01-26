@@ -11,7 +11,13 @@
       "stage": "dev",
       "environment": {
         "ENVIRONMENT": "dev",
-        "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+        "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+        "USER_CREATED_QUEUE_URL": {
+          "Ref": "UserCreatedQueue"
+        },
+        "EMAIL_NOTIFICATION_TOPIC_ARN": {
+          "Ref": "EmailNotificationTopic"
+        }
       },
       "httpApi": {
         "metrics": true
@@ -32,6 +38,42 @@
                 "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev",
                 "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev/index/email-index"
               ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sqs:SendMessage",
+                "sqs:GetQueueUrl"
+              ],
+              "Resource": {
+                "Fn::GetAtt": [
+                  "UserCreatedQueue",
+                  "Arn"
+                ]
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sqs:ReceiveMessage",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes"
+              ],
+              "Resource": {
+                "Fn::GetAtt": [
+                  "UserCreatedQueue",
+                  "Arn"
+                ]
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sns:Publish"
+              ],
+              "Resource": {
+                "Ref": "EmailNotificationTopic"
+              }
             }
           ]
         }
@@ -63,6 +105,12 @@
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
               "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-deleteUserNode"
+            }
+          },
+          "EnviarCorreosNodeLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-enviarCorreosNode"
             }
           },
           "IamRoleLambdaExecution": {
@@ -125,6 +173,31 @@
                       },
                       {
                         "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][0]"
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][1]"
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][2]"
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][3]"
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "sqs:ReceiveMessage",
+                          "sqs:DeleteMessage",
+                          "sqs:GetQueueAttributes"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "UserCreatedQueue",
+                              "Arn"
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
@@ -151,7 +224,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z/createUserNode.zip"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z/createUserNode.zip"
               },
               "Handler": "src/handlers/createUser.createUser",
               "Runtime": "nodejs20.x",
@@ -162,7 +235,13 @@
               "Environment": {
                 "Variables": {
                   "ENVIRONMENT": "dev",
-                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                  "USER_CREATED_QUEUE_URL": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"USER_CREATED_QUEUE_URL\"]"
+                  },
+                  "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"EMAIL_NOTIFICATION_TOPIC_ARN\"]"
+                  }
                 }
               },
               "Role": {
@@ -181,7 +260,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z/getUserNode.zip"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z/getUserNode.zip"
               },
               "Handler": "src/handlers/getUser.getUser",
               "Runtime": "nodejs20.x",
@@ -192,7 +271,13 @@
               "Environment": {
                 "Variables": {
                   "ENVIRONMENT": "dev",
-                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                  "USER_CREATED_QUEUE_URL": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"USER_CREATED_QUEUE_URL\"]"
+                  },
+                  "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"EMAIL_NOTIFICATION_TOPIC_ARN\"]"
+                  }
                 }
               },
               "Role": {
@@ -211,7 +296,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z/updateUserNode.zip"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z/updateUserNode.zip"
               },
               "Handler": "src/handlers/updateUser.updateUser",
               "Runtime": "nodejs20.x",
@@ -222,7 +307,13 @@
               "Environment": {
                 "Variables": {
                   "ENVIRONMENT": "dev",
-                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                  "USER_CREATED_QUEUE_URL": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"USER_CREATED_QUEUE_URL\"]"
+                  },
+                  "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"EMAIL_NOTIFICATION_TOPIC_ARN\"]"
+                  }
                 }
               },
               "Role": {
@@ -241,7 +332,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z/deleteUserNode.zip"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z/deleteUserNode.zip"
               },
               "Handler": "src/handlers/deleteUser.deleteUser",
               "Runtime": "nodejs20.x",
@@ -252,7 +343,13 @@
               "Environment": {
                 "Variables": {
                   "ENVIRONMENT": "dev",
-                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                  "USER_CREATED_QUEUE_URL": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"USER_CREATED_QUEUE_URL\"]"
+                  },
+                  "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"EMAIL_NOTIFICATION_TOPIC_ARN\"]"
+                  }
                 }
               },
               "Role": {
@@ -266,48 +363,120 @@
               "DeleteUserNodeLogGroup"
             ]
           },
-          "CreateUserNodeLambdaVersion1SiFIAKpDAD7tVZwVVRWyV2OVMgDM0VCEKbDTc": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
+          "EnviarCorreosNodeLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
             "Properties": {
-              "FunctionName": {
-                "Ref": "CreateUserNodeLambdaFunction"
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z/enviarCorreosNode.zip"
               },
-              "CodeSha256": "wymbwQ7exbxs56bkwVX7PpBwIa2JK8QWcJ2P4gEk2hk=",
-              "Description": "Create a new user (Node.js implementation)"
-            }
-          },
-          "DeleteUserNodeLambdaVersionFjfLtWVfsu9EQiQOVdnnEqo8OJzlRGYeCfV4wfGKWw": {
-            "Type": "AWS::Lambda::Version",
-            "DeletionPolicy": "Retain",
-            "Properties": {
-              "FunctionName": {
-                "Ref": "DeleteUserNodeLambdaFunction"
+              "Handler": "src/handlers/enviarCorreos.enviarCorreos",
+              "Runtime": "nodejs20.x",
+              "FunctionName": "reto-aws-serverless-users-dev-enviarCorreosNode",
+              "MemorySize": 256,
+              "Timeout": 30,
+              "Description": "Send welcome email notifications via SNS (Node.js implementation)",
+              "Environment": {
+                "Variables": {
+                  "ENVIRONMENT": "dev",
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                  "USER_CREATED_QUEUE_URL": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"USER_CREATED_QUEUE_URL\"]"
+                  },
+                  "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"EMAIL_NOTIFICATION_TOPIC_ARN\"]"
+                  }
+                }
               },
-              "CodeSha256": "wymbwQ7exbxs56bkwVX7PpBwIa2JK8QWcJ2P4gEk2hk=",
-              "Description": "Delete user by ID (Node.js implementation)"
-            }
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "EnviarCorreosNodeLogGroup"
+            ]
           },
-          "GetUserNodeLambdaVersionCebl5BbJJna3F9TT8xvlet2efI3o8GxOtmcalvDjo": {
+          "GetUserNodeLambdaVersion7gmjddMeFsR9dPtHDcGGF1tRJRD78mcWXN8SQvQiIU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetUserNodeLambdaFunction"
               },
-              "CodeSha256": "wymbwQ7exbxs56bkwVX7PpBwIa2JK8QWcJ2P4gEk2hk=",
+              "CodeSha256": "DihHgsjTQNtV35G3j7k/JB1efFcCr16xMJAHeHWL0j8=",
               "Description": "Get user by ID (Node.js implementation)"
             }
           },
-          "UpdateUserNodeLambdaVersionX3feitlaX0Kf7bZRMNwMHjzNTjr4WmRXYOuoqXymqmY": {
+          "CreateUserNodeLambdaVersionsdZMCEwicqCPnj7aksMuDPAl22KvmrYO6LU9HnLL8": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "CreateUserNodeLambdaFunction"
+              },
+              "CodeSha256": "DihHgsjTQNtV35G3j7k/JB1efFcCr16xMJAHeHWL0j8=",
+              "Description": "Create a new user (Node.js implementation)"
+            }
+          },
+          "UpdateUserNodeLambdaVersion1o4doMdgD7IU2cKUoJiVjvkN726hOykRERBE7dxU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UpdateUserNodeLambdaFunction"
               },
-              "CodeSha256": "wymbwQ7exbxs56bkwVX7PpBwIa2JK8QWcJ2P4gEk2hk=",
+              "CodeSha256": "DihHgsjTQNtV35G3j7k/JB1efFcCr16xMJAHeHWL0j8=",
               "Description": "Update user by ID (Node.js implementation)"
+            }
+          },
+          "DeleteUserNodeLambdaVersionAM9d1GZ1i8aiYSWN5JrSZliZ6teA5CVMrY5H0gpWE": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "DeleteUserNodeLambdaFunction"
+              },
+              "CodeSha256": "DihHgsjTQNtV35G3j7k/JB1efFcCr16xMJAHeHWL0j8=",
+              "Description": "Delete user by ID (Node.js implementation)"
+            }
+          },
+          "EnviarCorreosNodeLambdaVersionFZUKBmxUteLzSLpUQSKzEHMdjnUhCJIEJuBGV5yyk": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "EnviarCorreosNodeLambdaFunction"
+              },
+              "CodeSha256": "DihHgsjTQNtV35G3j7k/JB1efFcCr16xMJAHeHWL0j8=",
+              "Description": "Send welcome email notifications via SNS (Node.js implementation)"
+            }
+          },
+          "EnviarCorreosNodeEventSourceMappingSQSUserCreatedQueue": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": [
+              "IamRoleLambdaExecution"
+            ],
+            "Properties": {
+              "BatchSize": 10,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "UserCreatedQueue",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "EnviarCorreosNodeLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Enabled": true,
+              "FunctionResponseTypes": [
+                "ReportBatchItemFailures"
+              ]
             }
           },
           "HttpApi": {
@@ -617,6 +786,89 @@
               }
             },
             "DependsOn": "HttpApiIntegrationDeleteUserNode"
+          },
+          "UserCreatedQueue": {
+            "Type": "AWS::SQS::Queue",
+            "Properties": {
+              "QueueName": "reto-aws-serverless-users-user-created-dev",
+              "VisibilityTimeout": 300,
+              "MessageRetentionPeriod": 1209600,
+              "RedrivePolicy": {
+                "deadLetterTargetArn": {
+                  "Fn::GetAtt": [
+                    "UserCreatedDLQ",
+                    "Arn"
+                  ]
+                },
+                "maxReceiveCount": 3
+              },
+              "Tags": [
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ]
+            }
+          },
+          "UserCreatedDLQ": {
+            "Type": "AWS::SQS::Queue",
+            "Properties": {
+              "QueueName": "reto-aws-serverless-users-user-created-dlq-dev",
+              "MessageRetentionPeriod": 1209600,
+              "Tags": [
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ]
+            }
+          },
+          "EmailNotificationTopic": {
+            "Type": "AWS::SNS::Topic",
+            "Properties": {
+              "TopicName": "reto-aws-serverless-users-email-notifications-dev",
+              "DisplayName": "User Email Notifications",
+              "Tags": [
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ]
+            }
+          },
+          "UserCreatedQueuePolicy": {
+            "Type": "AWS::SQS::QueuePolicy",
+            "Properties": {
+              "Queues": [
+                {
+                  "Ref": "UserCreatedQueue"
+                }
+              ],
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "AWS": {
+                        "Fn::GetAtt": [
+                          "IamRoleLambdaExecution",
+                          "Arn"
+                        ]
+                      }
+                    },
+                    "Action": [
+                      "sqs:SendMessage"
+                    ],
+                    "Resource": {
+                      "Fn::GetAtt": [
+                        "UserCreatedQueue",
+                        "Arn"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
           }
         },
         "Outputs": {
@@ -626,40 +878,49 @@
               "Name": "sls-reto-aws-serverless-users-dev-ServerlessDeploymentBucketName"
             }
           },
-          "CreateUserNodeLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "CreateUserNodeLambdaVersion1SiFIAKpDAD7tVZwVVRWyV2OVMgDM0VCEKbDTc"
-            },
-            "Export": {
-              "Name": "sls-reto-aws-serverless-users-dev-CreateUserNodeLambdaFunctionQualifiedArn"
-            }
-          },
-          "DeleteUserNodeLambdaFunctionQualifiedArn": {
-            "Description": "Current Lambda function version",
-            "Value": {
-              "Ref": "DeleteUserNodeLambdaVersionFjfLtWVfsu9EQiQOVdnnEqo8OJzlRGYeCfV4wfGKWw"
-            },
-            "Export": {
-              "Name": "sls-reto-aws-serverless-users-dev-DeleteUserNodeLambdaFunctionQualifiedArn"
-            }
-          },
           "GetUserNodeLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetUserNodeLambdaVersionCebl5BbJJna3F9TT8xvlet2efI3o8GxOtmcalvDjo"
+              "Ref": "GetUserNodeLambdaVersion7gmjddMeFsR9dPtHDcGGF1tRJRD78mcWXN8SQvQiIU"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-GetUserNodeLambdaFunctionQualifiedArn"
             }
           },
+          "CreateUserNodeLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "CreateUserNodeLambdaVersionsdZMCEwicqCPnj7aksMuDPAl22KvmrYO6LU9HnLL8"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-CreateUserNodeLambdaFunctionQualifiedArn"
+            }
+          },
           "UpdateUserNodeLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdateUserNodeLambdaVersionX3feitlaX0Kf7bZRMNwMHjzNTjr4WmRXYOuoqXymqmY"
+              "Ref": "UpdateUserNodeLambdaVersion1o4doMdgD7IU2cKUoJiVjvkN726hOykRERBE7dxU"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-UpdateUserNodeLambdaFunctionQualifiedArn"
+            }
+          },
+          "DeleteUserNodeLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "DeleteUserNodeLambdaVersionAM9d1GZ1i8aiYSWN5JrSZliZ6teA5CVMrY5H0gpWE"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-DeleteUserNodeLambdaFunctionQualifiedArn"
+            }
+          },
+          "EnviarCorreosNodeLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "EnviarCorreosNodeLambdaVersionFZUKBmxUteLzSLpUQSKzEHMdjnUhCJIEJuBGV5yyk"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-EnviarCorreosNodeLambdaFunctionQualifiedArn"
             }
           },
           "HttpApiId": {
@@ -695,6 +956,36 @@
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-HttpApiUrl"
             }
+          },
+          "UserCreatedQueueUrl": {
+            "Description": "URL of the User Created SQS Queue",
+            "Value": {
+              "Ref": "UserCreatedQueue"
+            },
+            "Export": {
+              "Name": "reto-aws-serverless-users-dev-UserCreatedQueueUrl"
+            }
+          },
+          "UserCreatedQueueArn": {
+            "Description": "ARN of the User Created SQS Queue",
+            "Value": {
+              "Fn::GetAtt": [
+                "UserCreatedQueue",
+                "Arn"
+              ]
+            },
+            "Export": {
+              "Name": "reto-aws-serverless-users-dev-UserCreatedQueueArn"
+            }
+          },
+          "EmailNotificationTopicArn": {
+            "Description": "ARN of the Email Notification SNS Topic",
+            "Value": {
+              "Ref": "EmailNotificationTopic"
+            },
+            "Export": {
+              "Name": "reto-aws-serverless-users-dev-EmailNotificationTopicArn"
+            }
           }
         }
       },
@@ -724,7 +1015,7 @@
         },
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "CreateUserNodeLambdaVersion1SiFIAKpDAD7tVZwVVRWyV2OVMgDM0VCEKbDTc"
+        "versionLogicalId": "CreateUserNodeLambdaVersionsdZMCEwicqCPnj7aksMuDPAl22KvmrYO6LU9HnLL8"
       },
       "getUserNode": {
         "runtime": "nodejs20.x",
@@ -748,7 +1039,7 @@
         },
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "GetUserNodeLambdaVersionCebl5BbJJna3F9TT8xvlet2efI3o8GxOtmcalvDjo"
+        "versionLogicalId": "GetUserNodeLambdaVersion7gmjddMeFsR9dPtHDcGGF1tRJRD78mcWXN8SQvQiIU"
       },
       "updateUserNode": {
         "runtime": "nodejs20.x",
@@ -772,7 +1063,7 @@
         },
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "UpdateUserNodeLambdaVersionX3feitlaX0Kf7bZRMNwMHjzNTjr4WmRXYOuoqXymqmY"
+        "versionLogicalId": "UpdateUserNodeLambdaVersion1o4doMdgD7IU2cKUoJiVjvkN726hOykRERBE7dxU"
       },
       "deleteUserNode": {
         "runtime": "nodejs20.x",
@@ -796,7 +1087,152 @@
         },
         "memory": 256,
         "vpc": {},
-        "versionLogicalId": "DeleteUserNodeLambdaVersionFjfLtWVfsu9EQiQOVdnnEqo8OJzlRGYeCfV4wfGKWw"
+        "versionLogicalId": "DeleteUserNodeLambdaVersionAM9d1GZ1i8aiYSWN5JrSZliZ6teA5CVMrY5H0gpWE"
+      },
+      "enviarCorreosNode": {
+        "runtime": "nodejs20.x",
+        "handler": "src/handlers/enviarCorreos.enviarCorreos",
+        "description": "Send welcome email notifications via SNS (Node.js implementation)",
+        "events": [
+          {
+            "sqs": {
+              "arn": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"IamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][6][\"Resource\"][0]"
+              },
+              "batchSize": 10,
+              "maximumBatchingWindowInSeconds": 5,
+              "functionResponseType": "ReportBatchItemFailures"
+            }
+          }
+        ],
+        "timeout": 30,
+        "memorySize": 256,
+        "name": "reto-aws-serverless-users-dev-enviarCorreosNode",
+        "package": {
+          "artifact": ".serverless\\enviarCorreosNode.zip"
+        },
+        "memory": 256,
+        "vpc": {},
+        "versionLogicalId": "EnviarCorreosNodeLambdaVersionFZUKBmxUteLzSLpUQSKzEHMdjnUhCJIEJuBGV5yyk"
+      }
+    },
+    "resources": {
+      "Resources": {
+        "UserCreatedQueue": {
+          "Type": "AWS::SQS::Queue",
+          "Properties": {
+            "QueueName": "reto-aws-serverless-users-user-created-dev",
+            "VisibilityTimeout": 300,
+            "MessageRetentionPeriod": 1209600,
+            "RedrivePolicy": {
+              "deadLetterTargetArn": {
+                "Fn::GetAtt": [
+                  "UserCreatedDLQ",
+                  "Arn"
+                ]
+              },
+              "maxReceiveCount": 3
+            },
+            "Tags": [
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              }
+            ]
+          }
+        },
+        "UserCreatedDLQ": {
+          "Type": "AWS::SQS::Queue",
+          "Properties": {
+            "QueueName": "reto-aws-serverless-users-user-created-dlq-dev",
+            "MessageRetentionPeriod": 1209600,
+            "Tags": [
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              }
+            ]
+          }
+        },
+        "EmailNotificationTopic": {
+          "Type": "AWS::SNS::Topic",
+          "Properties": {
+            "TopicName": "reto-aws-serverless-users-email-notifications-dev",
+            "DisplayName": "User Email Notifications",
+            "Tags": [
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              }
+            ]
+          }
+        },
+        "UserCreatedQueuePolicy": {
+          "Type": "AWS::SQS::QueuePolicy",
+          "Properties": {
+            "Queues": [
+              {
+                "Ref": "UserCreatedQueue"
+              }
+            ],
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": {
+                      "Fn::GetAtt": [
+                        "IamRoleLambdaExecution",
+                        "Arn"
+                      ]
+                    }
+                  },
+                  "Action": [
+                    "sqs:SendMessage"
+                  ],
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "UserCreatedQueue",
+                      "Arn"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Outputs": {
+        "UserCreatedQueueUrl": {
+          "Description": "URL of the User Created SQS Queue",
+          "Value": {
+            "Ref": "UserCreatedQueue"
+          },
+          "Export": {
+            "Name": "reto-aws-serverless-users-dev-UserCreatedQueueUrl"
+          }
+        },
+        "UserCreatedQueueArn": {
+          "Description": "ARN of the User Created SQS Queue",
+          "Value": {
+            "Fn::GetAtt": [
+              "UserCreatedQueue",
+              "Arn"
+            ]
+          },
+          "Export": {
+            "Name": "reto-aws-serverless-users-dev-UserCreatedQueueArn"
+          }
+        },
+        "EmailNotificationTopicArn": {
+          "Description": "ARN of the Email Notification SNS Topic",
+          "Value": {
+            "Ref": "EmailNotificationTopic"
+          },
+          "Export": {
+            "Name": "reto-aws-serverless-users-dev-EmailNotificationTopicArn"
+          }
+        }
       }
     },
     "configValidationMode": "warn",
@@ -811,10 +1247,13 @@
         "individually": true,
         "artifactsS3KeyDirname": "serverless/reto-aws-serverless-users/dev/code-artifacts",
         "deploymentBucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-        "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z"
+        "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z"
       },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
+      },
+      "resources": {
+        "$ref": "$[\"service\"][\"resources\"]"
       }
     },
     "appId": null,
@@ -823,7 +1262,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769207344966-2026-01-23T22:29:04.966Z",
+    "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z",
     "artifact": ""
   }
 }

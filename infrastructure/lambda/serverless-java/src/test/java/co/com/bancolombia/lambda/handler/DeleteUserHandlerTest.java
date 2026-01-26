@@ -35,7 +35,7 @@ class DeleteUserHandlerTest {
     void testDeleteUserSuccess() {
         Map<String, Object> input = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
-        pathParameters.put("id", "1");
+        pathParameters.put("id", "550e8400-e29b-41d4-a716-446655440001");
         input.put("pathParameters", pathParameters);
 
         LambdaResponse response = handler.handleRequest(input, context);
@@ -48,7 +48,7 @@ class DeleteUserHandlerTest {
     void testDeleteUserNotFound() {
         Map<String, Object> input = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
-        pathParameters.put("id", "999");
+        pathParameters.put("id", "550e8400-e29b-41d4-a716-446655440999");
         input.put("pathParameters", pathParameters);
 
         LambdaResponse response = handler.handleRequest(input, context);

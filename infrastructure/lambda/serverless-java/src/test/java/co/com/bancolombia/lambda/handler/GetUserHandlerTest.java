@@ -37,7 +37,7 @@ class GetUserHandlerTest {
         Map<String, Object> input = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
         // Use ID 2 which is a hardcoded user (María López)
-        pathParameters.put("id", "2");
+        pathParameters.put("id", "550e8400-e29b-41d4-a716-446655440002");
         input.put("pathParameters", pathParameters);
 
         LambdaResponse response = handler.handleRequest(input, context);
@@ -50,7 +50,7 @@ class GetUserHandlerTest {
     void testGetUserNotFound() {
         Map<String, Object> input = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
-        pathParameters.put("id", "999");
+        pathParameters.put("id", "550e8400-e29b-41d4-a716-446655440999");
         input.put("pathParameters", pathParameters);
 
         LambdaResponse response = handler.handleRequest(input, context);

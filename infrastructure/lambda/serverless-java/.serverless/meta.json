@@ -13,7 +13,13 @@
         "stage": "dev",
         "environment": {
           "ENVIRONMENT": "dev",
-          "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+          "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+          "USER_CREATED_QUEUE_URL": {
+            "Ref": "UserCreatedQueue"
+          },
+          "EMAIL_NOTIFICATION_TOPIC_ARN": {
+            "Ref": "EmailNotificationTopic"
+          }
         },
         "httpApi": {
           "metrics": true
@@ -35,6 +41,42 @@
                   "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev",
                   "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev/index/email-index"
                 ]
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "sqs:SendMessage",
+                  "sqs:GetQueueUrl"
+                ],
+                "Resource": {
+                  "Fn::GetAtt": [
+                    "UserCreatedQueue",
+                    "Arn"
+                  ]
+                }
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "sqs:ReceiveMessage",
+                  "sqs:DeleteMessage",
+                  "sqs:GetQueueAttributes"
+                ],
+                "Resource": {
+                  "Fn::GetAtt": [
+                    "UserCreatedQueue",
+                    "Arn"
+                  ]
+                }
+              },
+              {
+                "Effect": "Allow",
+                "Action": [
+                  "sns:Publish"
+                ],
+                "Resource": {
+                  "Ref": "EmailNotificationTopic"
+                }
               }
             ]
           }
@@ -66,6 +108,12 @@
               "Type": "AWS::Logs::LogGroup",
               "Properties": {
                 "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-deleteUserJava"
+              }
+            },
+            "EnviarCorreosJavaLogGroup": {
+              "Type": "AWS::Logs::LogGroup",
+              "Properties": {
+                "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-enviarCorreosJava"
               }
             },
             "IamRoleLambdaExecution": {
@@ -140,6 +188,58 @@
                             "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev",
                             "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev/index/email-index"
                           ]
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "sqs:SendMessage",
+                            "sqs:GetQueueUrl"
+                          ],
+                          "Resource": {
+                            "Fn::GetAtt": [
+                              "UserCreatedQueue",
+                              "Arn"
+                            ]
+                          }
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "sqs:ReceiveMessage",
+                            "sqs:DeleteMessage",
+                            "sqs:GetQueueAttributes"
+                          ],
+                          "Resource": {
+                            "Fn::GetAtt": [
+                              "UserCreatedQueue",
+                              "Arn"
+                            ]
+                          }
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "sns:Publish"
+                          ],
+                          "Resource": {
+                            "Ref": "EmailNotificationTopic"
+                          }
+                        },
+                        {
+                          "Effect": "Allow",
+                          "Action": [
+                            "sqs:ReceiveMessage",
+                            "sqs:DeleteMessage",
+                            "sqs:GetQueueAttributes"
+                          ],
+                          "Resource": [
+                            {
+                              "Fn::GetAtt": [
+                                "UserCreatedQueue",
+                                "Arn"
+                              ]
+                            }
+                          ]
                         }
                       ]
                     }
@@ -166,7 +266,7 @@
               "Properties": {
                 "Code": {
                   "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
                 },
                 "Handler": "co.com.bancolombia.lambda.handler.CreateUserHandler",
                 "Runtime": "java17",
@@ -177,7 +277,13 @@
                 "Environment": {
                   "Variables": {
                     "ENVIRONMENT": "dev",
-                    "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                    "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                    "USER_CREATED_QUEUE_URL": {
+                      "Ref": "UserCreatedQueue"
+                    },
+                    "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                      "Ref": "EmailNotificationTopic"
+                    }
                   }
                 },
                 "Role": {
@@ -196,7 +302,7 @@
               "Properties": {
                 "Code": {
                   "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
                 },
                 "Handler": "co.com.bancolombia.lambda.handler.GetUserHandler",
                 "Runtime": "java17",
@@ -207,7 +313,13 @@
                 "Environment": {
                   "Variables": {
                     "ENVIRONMENT": "dev",
-                    "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                    "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                    "USER_CREATED_QUEUE_URL": {
+                      "Ref": "UserCreatedQueue"
+                    },
+                    "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                      "Ref": "EmailNotificationTopic"
+                    }
                   }
                 },
                 "Role": {
@@ -226,7 +338,7 @@
               "Properties": {
                 "Code": {
                   "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
                 },
                 "Handler": "co.com.bancolombia.lambda.handler.UpdateUserHandler",
                 "Runtime": "java17",
@@ -237,7 +349,13 @@
                 "Environment": {
                   "Variables": {
                     "ENVIRONMENT": "dev",
-                    "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                    "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                    "USER_CREATED_QUEUE_URL": {
+                      "Ref": "UserCreatedQueue"
+                    },
+                    "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                      "Ref": "EmailNotificationTopic"
+                    }
                   }
                 },
                 "Role": {
@@ -256,7 +374,7 @@
               "Properties": {
                 "Code": {
                   "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
                 },
                 "Handler": "co.com.bancolombia.lambda.handler.DeleteUserHandler",
                 "Runtime": "java17",
@@ -267,7 +385,13 @@
                 "Environment": {
                   "Variables": {
                     "ENVIRONMENT": "dev",
-                    "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                    "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                    "USER_CREATED_QUEUE_URL": {
+                      "Ref": "UserCreatedQueue"
+                    },
+                    "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                      "Ref": "EmailNotificationTopic"
+                    }
                   }
                 },
                 "Role": {
@@ -281,48 +405,120 @@
                 "DeleteUserJavaLogGroup"
               ]
             },
-            "CreateUserJavaLambdaVersionMn6OJeHqnpvmAhL4124aBAFoCR1FU8oKwxJSYJB4aMk": {
+            "EnviarCorreosJavaLambdaFunction": {
+              "Type": "AWS::Lambda::Function",
+              "Properties": {
+                "Code": {
+                  "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                  "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
+                },
+                "Handler": "co.com.bancolombia.lambda.handler.EnviarCorreosHandler",
+                "Runtime": "java17",
+                "FunctionName": "reto-aws-serverless-users-dev-enviarCorreosJava",
+                "MemorySize": 256,
+                "Timeout": 30,
+                "Description": "Send welcome email notifications via SNS (Java implementation)",
+                "Environment": {
+                  "Variables": {
+                    "ENVIRONMENT": "dev",
+                    "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                    "USER_CREATED_QUEUE_URL": {
+                      "Ref": "UserCreatedQueue"
+                    },
+                    "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                      "Ref": "EmailNotificationTopic"
+                    }
+                  }
+                },
+                "Role": {
+                  "Fn::GetAtt": [
+                    "IamRoleLambdaExecution",
+                    "Arn"
+                  ]
+                }
+              },
+              "DependsOn": [
+                "EnviarCorreosJavaLogGroup"
+              ]
+            },
+            "CreateUserJavaLambdaVersionYMGASpPG1AMg7wuTDf18OGGj8jO96QBU6B43SGEp5I": {
               "Type": "AWS::Lambda::Version",
               "DeletionPolicy": "Retain",
               "Properties": {
                 "FunctionName": {
                   "Ref": "CreateUserJavaLambdaFunction"
                 },
-                "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+                "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
                 "Description": "Create a new user (Java implementation)"
               }
             },
-            "GetUserJavaLambdaVersion00xjBVwcIUPTP0HYBQEF68GsxEAuyf8Zwsisburg": {
+            "GetUserJavaLambdaVersionCF19Hu6ZsSCBZ3LqrSWomu2Y325Dguxpu1iiWvAhaI": {
               "Type": "AWS::Lambda::Version",
               "DeletionPolicy": "Retain",
               "Properties": {
                 "FunctionName": {
                   "Ref": "GetUserJavaLambdaFunction"
                 },
-                "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+                "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
                 "Description": "Get user by ID (Java implementation)"
               }
             },
-            "UpdateUserJavaLambdaVersion10cchSqWstEUD5HqkxEnoPu9i7aiPOZJRiCl2GTZk90": {
+            "UpdateUserJavaLambdaVersionpNe4vtcFpUuhchJJ8agj09oQ3RUXVq47MOdXcLYHsv4": {
               "Type": "AWS::Lambda::Version",
               "DeletionPolicy": "Retain",
               "Properties": {
                 "FunctionName": {
                   "Ref": "UpdateUserJavaLambdaFunction"
                 },
-                "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+                "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
                 "Description": "Update user by ID (Java implementation)"
               }
             },
-            "DeleteUserJavaLambdaVersionIakjwREtCPZQTOFEsNeneR5dAmkzN9wyhso5cKlJtc": {
+            "DeleteUserJavaLambdaVersiond1q5EtegBD1Cva5yryHT8o6OQMEMMJjGIEumtqJ1E": {
               "Type": "AWS::Lambda::Version",
               "DeletionPolicy": "Retain",
               "Properties": {
                 "FunctionName": {
                   "Ref": "DeleteUserJavaLambdaFunction"
                 },
-                "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+                "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
                 "Description": "Delete user by ID (Java implementation)"
+              }
+            },
+            "EnviarCorreosJavaLambdaVersionOEnfBHhEv7uR5NThqUTgEqAxZBiChdEP8xwuhj4fn8": {
+              "Type": "AWS::Lambda::Version",
+              "DeletionPolicy": "Retain",
+              "Properties": {
+                "FunctionName": {
+                  "Ref": "EnviarCorreosJavaLambdaFunction"
+                },
+                "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
+                "Description": "Send welcome email notifications via SNS (Java implementation)"
+              }
+            },
+            "EnviarCorreosJavaEventSourceMappingSQSUserCreatedQueue": {
+              "Type": "AWS::Lambda::EventSourceMapping",
+              "DependsOn": [
+                "IamRoleLambdaExecution"
+              ],
+              "Properties": {
+                "BatchSize": 10,
+                "EventSourceArn": {
+                  "Fn::GetAtt": [
+                    "UserCreatedQueue",
+                    "Arn"
+                  ]
+                },
+                "FunctionName": {
+                  "Fn::GetAtt": [
+                    "EnviarCorreosJavaLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "Enabled": true,
+                "FunctionResponseTypes": [
+                  "ReportBatchItemFailures"
+                ]
               }
             },
             "HttpApi": {
@@ -644,6 +840,89 @@
                 }
               },
               "DependsOn": "HttpApiIntegrationDeleteUserJava"
+            },
+            "UserCreatedQueue": {
+              "Type": "AWS::SQS::Queue",
+              "Properties": {
+                "QueueName": "reto-aws-serverless-users-user-created-dev",
+                "VisibilityTimeout": 300,
+                "MessageRetentionPeriod": 1209600,
+                "RedrivePolicy": {
+                  "deadLetterTargetArn": {
+                    "Fn::GetAtt": [
+                      "UserCreatedDLQ",
+                      "Arn"
+                    ]
+                  },
+                  "maxReceiveCount": 3
+                },
+                "Tags": [
+                  {
+                    "Key": "Environment",
+                    "Value": "dev"
+                  }
+                ]
+              }
+            },
+            "UserCreatedDLQ": {
+              "Type": "AWS::SQS::Queue",
+              "Properties": {
+                "QueueName": "reto-aws-serverless-users-user-created-dlq-dev",
+                "MessageRetentionPeriod": 1209600,
+                "Tags": [
+                  {
+                    "Key": "Environment",
+                    "Value": "dev"
+                  }
+                ]
+              }
+            },
+            "EmailNotificationTopic": {
+              "Type": "AWS::SNS::Topic",
+              "Properties": {
+                "TopicName": "reto-aws-serverless-users-email-notifications-dev",
+                "DisplayName": "User Email Notifications",
+                "Tags": [
+                  {
+                    "Key": "Environment",
+                    "Value": "dev"
+                  }
+                ]
+              }
+            },
+            "UserCreatedQueuePolicy": {
+              "Type": "AWS::SQS::QueuePolicy",
+              "Properties": {
+                "Queues": [
+                  {
+                    "Ref": "UserCreatedQueue"
+                  }
+                ],
+                "PolicyDocument": {
+                  "Statement": [
+                    {
+                      "Effect": "Allow",
+                      "Principal": {
+                        "AWS": {
+                          "Fn::GetAtt": [
+                            "IamRoleLambdaExecution",
+                            "Arn"
+                          ]
+                        }
+                      },
+                      "Action": [
+                        "sqs:SendMessage"
+                      ],
+                      "Resource": {
+                        "Fn::GetAtt": [
+                          "UserCreatedQueue",
+                          "Arn"
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
             }
           },
           "Outputs": {
@@ -656,7 +935,7 @@
             "CreateUserJavaLambdaFunctionQualifiedArn": {
               "Description": "Current Lambda function version",
               "Value": {
-                "Ref": "CreateUserJavaLambdaVersionMn6OJeHqnpvmAhL4124aBAFoCR1FU8oKwxJSYJB4aMk"
+                "Ref": "CreateUserJavaLambdaVersionYMGASpPG1AMg7wuTDf18OGGj8jO96QBU6B43SGEp5I"
               },
               "Export": {
                 "Name": "sls-reto-aws-serverless-users-dev-CreateUserJavaLambdaFunctionQualifiedArn"
@@ -665,7 +944,7 @@
             "GetUserJavaLambdaFunctionQualifiedArn": {
               "Description": "Current Lambda function version",
               "Value": {
-                "Ref": "GetUserJavaLambdaVersion00xjBVwcIUPTP0HYBQEF68GsxEAuyf8Zwsisburg"
+                "Ref": "GetUserJavaLambdaVersionCF19Hu6ZsSCBZ3LqrSWomu2Y325Dguxpu1iiWvAhaI"
               },
               "Export": {
                 "Name": "sls-reto-aws-serverless-users-dev-GetUserJavaLambdaFunctionQualifiedArn"
@@ -674,7 +953,7 @@
             "UpdateUserJavaLambdaFunctionQualifiedArn": {
               "Description": "Current Lambda function version",
               "Value": {
-                "Ref": "UpdateUserJavaLambdaVersion10cchSqWstEUD5HqkxEnoPu9i7aiPOZJRiCl2GTZk90"
+                "Ref": "UpdateUserJavaLambdaVersionpNe4vtcFpUuhchJJ8agj09oQ3RUXVq47MOdXcLYHsv4"
               },
               "Export": {
                 "Name": "sls-reto-aws-serverless-users-dev-UpdateUserJavaLambdaFunctionQualifiedArn"
@@ -683,10 +962,19 @@
             "DeleteUserJavaLambdaFunctionQualifiedArn": {
               "Description": "Current Lambda function version",
               "Value": {
-                "Ref": "DeleteUserJavaLambdaVersionIakjwREtCPZQTOFEsNeneR5dAmkzN9wyhso5cKlJtc"
+                "Ref": "DeleteUserJavaLambdaVersiond1q5EtegBD1Cva5yryHT8o6OQMEMMJjGIEumtqJ1E"
               },
               "Export": {
                 "Name": "sls-reto-aws-serverless-users-dev-DeleteUserJavaLambdaFunctionQualifiedArn"
+              }
+            },
+            "EnviarCorreosJavaLambdaFunctionQualifiedArn": {
+              "Description": "Current Lambda function version",
+              "Value": {
+                "Ref": "EnviarCorreosJavaLambdaVersionOEnfBHhEv7uR5NThqUTgEqAxZBiChdEP8xwuhj4fn8"
+              },
+              "Export": {
+                "Name": "sls-reto-aws-serverless-users-dev-EnviarCorreosJavaLambdaFunctionQualifiedArn"
               }
             },
             "HttpApiId": {
@@ -722,6 +1010,36 @@
               "Export": {
                 "Name": "sls-reto-aws-serverless-users-dev-HttpApiUrl"
               }
+            },
+            "UserCreatedQueueUrl": {
+              "Description": "URL of the User Created SQS Queue",
+              "Value": {
+                "Ref": "UserCreatedQueue"
+              },
+              "Export": {
+                "Name": "reto-aws-serverless-users-dev-UserCreatedQueueUrl"
+              }
+            },
+            "UserCreatedQueueArn": {
+              "Description": "ARN of the User Created SQS Queue",
+              "Value": {
+                "Fn::GetAtt": [
+                  "UserCreatedQueue",
+                  "Arn"
+                ]
+              },
+              "Export": {
+                "Name": "reto-aws-serverless-users-dev-UserCreatedQueueArn"
+              }
+            },
+            "EmailNotificationTopicArn": {
+              "Description": "ARN of the Email Notification SNS Topic",
+              "Value": {
+                "Ref": "EmailNotificationTopic"
+              },
+              "Export": {
+                "Name": "reto-aws-serverless-users-dev-EmailNotificationTopicArn"
+              }
             }
           }
         },
@@ -731,7 +1049,7 @@
         "individually": true,
         "artifactsS3KeyDirname": "serverless/reto-aws-serverless-users/dev/code-artifacts",
         "deploymentBucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-        "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z"
+        "artifactDirectoryName": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z"
       },
       "functions": {
         "createUserJava": {
@@ -756,7 +1074,7 @@
           "name": "reto-aws-serverless-users-dev-createUserJava",
           "memory": 256,
           "vpc": {},
-          "versionLogicalId": "CreateUserJavaLambdaVersionMn6OJeHqnpvmAhL4124aBAFoCR1FU8oKwxJSYJB4aMk"
+          "versionLogicalId": "CreateUserJavaLambdaVersionYMGASpPG1AMg7wuTDf18OGGj8jO96QBU6B43SGEp5I"
         },
         "getUserJava": {
           "runtime": "java17",
@@ -780,7 +1098,7 @@
           "name": "reto-aws-serverless-users-dev-getUserJava",
           "memory": 256,
           "vpc": {},
-          "versionLogicalId": "GetUserJavaLambdaVersion00xjBVwcIUPTP0HYBQEF68GsxEAuyf8Zwsisburg"
+          "versionLogicalId": "GetUserJavaLambdaVersionCF19Hu6ZsSCBZ3LqrSWomu2Y325Dguxpu1iiWvAhaI"
         },
         "updateUserJava": {
           "runtime": "java17",
@@ -804,7 +1122,7 @@
           "name": "reto-aws-serverless-users-dev-updateUserJava",
           "memory": 256,
           "vpc": {},
-          "versionLogicalId": "UpdateUserJavaLambdaVersion10cchSqWstEUD5HqkxEnoPu9i7aiPOZJRiCl2GTZk90"
+          "versionLogicalId": "UpdateUserJavaLambdaVersionpNe4vtcFpUuhchJJ8agj09oQ3RUXVq47MOdXcLYHsv4"
         },
         "deleteUserJava": {
           "runtime": "java17",
@@ -828,7 +1146,155 @@
           "name": "reto-aws-serverless-users-dev-deleteUserJava",
           "memory": 256,
           "vpc": {},
-          "versionLogicalId": "DeleteUserJavaLambdaVersionIakjwREtCPZQTOFEsNeneR5dAmkzN9wyhso5cKlJtc"
+          "versionLogicalId": "DeleteUserJavaLambdaVersiond1q5EtegBD1Cva5yryHT8o6OQMEMMJjGIEumtqJ1E"
+        },
+        "enviarCorreosJava": {
+          "runtime": "java17",
+          "handler": "co.com.bancolombia.lambda.handler.EnviarCorreosHandler",
+          "description": "Send welcome email notifications via SNS (Java implementation)",
+          "package": {
+            "artifact": "build/libs/serverless-java-all.jar"
+          },
+          "events": [
+            {
+              "sqs": {
+                "arn": {
+                  "Fn::GetAtt": [
+                    "UserCreatedQueue",
+                    "Arn"
+                  ]
+                },
+                "batchSize": 10,
+                "maximumBatchingWindowInSeconds": 5,
+                "functionResponseType": "ReportBatchItemFailures"
+              }
+            }
+          ],
+          "timeout": 30,
+          "memorySize": 256,
+          "name": "reto-aws-serverless-users-dev-enviarCorreosJava",
+          "memory": 256,
+          "vpc": {},
+          "versionLogicalId": "EnviarCorreosJavaLambdaVersionOEnfBHhEv7uR5NThqUTgEqAxZBiChdEP8xwuhj4fn8"
+        }
+      },
+      "resources": {
+        "Resources": {
+          "UserCreatedQueue": {
+            "Type": "AWS::SQS::Queue",
+            "Properties": {
+              "QueueName": "reto-aws-serverless-users-user-created-dev",
+              "VisibilityTimeout": 300,
+              "MessageRetentionPeriod": 1209600,
+              "RedrivePolicy": {
+                "deadLetterTargetArn": {
+                  "Fn::GetAtt": [
+                    "UserCreatedDLQ",
+                    "Arn"
+                  ]
+                },
+                "maxReceiveCount": 3
+              },
+              "Tags": [
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ]
+            }
+          },
+          "UserCreatedDLQ": {
+            "Type": "AWS::SQS::Queue",
+            "Properties": {
+              "QueueName": "reto-aws-serverless-users-user-created-dlq-dev",
+              "MessageRetentionPeriod": 1209600,
+              "Tags": [
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ]
+            }
+          },
+          "EmailNotificationTopic": {
+            "Type": "AWS::SNS::Topic",
+            "Properties": {
+              "TopicName": "reto-aws-serverless-users-email-notifications-dev",
+              "DisplayName": "User Email Notifications",
+              "Tags": [
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ]
+            }
+          },
+          "UserCreatedQueuePolicy": {
+            "Type": "AWS::SQS::QueuePolicy",
+            "Properties": {
+              "Queues": [
+                {
+                  "Ref": "UserCreatedQueue"
+                }
+              ],
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "AWS": {
+                        "Fn::GetAtt": [
+                          "IamRoleLambdaExecution",
+                          "Arn"
+                        ]
+                      }
+                    },
+                    "Action": [
+                      "sqs:SendMessage"
+                    ],
+                    "Resource": {
+                      "Fn::GetAtt": [
+                        "UserCreatedQueue",
+                        "Arn"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "Outputs": {
+          "UserCreatedQueueUrl": {
+            "Description": "URL of the User Created SQS Queue",
+            "Value": {
+              "Ref": "UserCreatedQueue"
+            },
+            "Export": {
+              "Name": "reto-aws-serverless-users-dev-UserCreatedQueueUrl"
+            }
+          },
+          "UserCreatedQueueArn": {
+            "Description": "ARN of the User Created SQS Queue",
+            "Value": {
+              "Fn::GetAtt": [
+                "UserCreatedQueue",
+                "Arn"
+              ]
+            },
+            "Export": {
+              "Name": "reto-aws-serverless-users-dev-UserCreatedQueueArn"
+            }
+          },
+          "EmailNotificationTopicArn": {
+            "Description": "ARN of the Email Notification SNS Topic",
+            "Value": {
+              "Ref": "EmailNotificationTopic"
+            },
+            "Export": {
+              "Name": "reto-aws-serverless-users-dev-EmailNotificationTopicArn"
+            }
+          }
         }
       }
     },
@@ -839,7 +1305,13 @@
       "stage": "dev",
       "environment": {
         "ENVIRONMENT": "dev",
-        "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+        "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+        "USER_CREATED_QUEUE_URL": {
+          "Ref": "UserCreatedQueue"
+        },
+        "EMAIL_NOTIFICATION_TOPIC_ARN": {
+          "Ref": "EmailNotificationTopic"
+        }
       },
       "httpApi": {
         "metrics": true
@@ -861,6 +1333,42 @@
                 "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev",
                 "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev/index/email-index"
               ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sqs:SendMessage",
+                "sqs:GetQueueUrl"
+              ],
+              "Resource": {
+                "Fn::GetAtt": [
+                  "UserCreatedQueue",
+                  "Arn"
+                ]
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sqs:ReceiveMessage",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes"
+              ],
+              "Resource": {
+                "Fn::GetAtt": [
+                  "UserCreatedQueue",
+                  "Arn"
+                ]
+              }
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "sns:Publish"
+              ],
+              "Resource": {
+                "Ref": "EmailNotificationTopic"
+              }
             }
           ]
         }
@@ -892,6 +1400,12 @@
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
               "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-deleteUserJava"
+            }
+          },
+          "EnviarCorreosJavaLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-enviarCorreosJava"
             }
           },
           "IamRoleLambdaExecution": {
@@ -966,6 +1480,58 @@
                           "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev",
                           "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev/index/email-index"
                         ]
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "sqs:SendMessage",
+                          "sqs:GetQueueUrl"
+                        ],
+                        "Resource": {
+                          "Fn::GetAtt": [
+                            "UserCreatedQueue",
+                            "Arn"
+                          ]
+                        }
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "sqs:ReceiveMessage",
+                          "sqs:DeleteMessage",
+                          "sqs:GetQueueAttributes"
+                        ],
+                        "Resource": {
+                          "Fn::GetAtt": [
+                            "UserCreatedQueue",
+                            "Arn"
+                          ]
+                        }
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "sns:Publish"
+                        ],
+                        "Resource": {
+                          "Ref": "EmailNotificationTopic"
+                        }
+                      },
+                      {
+                        "Effect": "Allow",
+                        "Action": [
+                          "sqs:ReceiveMessage",
+                          "sqs:DeleteMessage",
+                          "sqs:GetQueueAttributes"
+                        ],
+                        "Resource": [
+                          {
+                            "Fn::GetAtt": [
+                              "UserCreatedQueue",
+                              "Arn"
+                            ]
+                          }
+                        ]
                       }
                     ]
                   }
@@ -992,7 +1558,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
               },
               "Handler": "co.com.bancolombia.lambda.handler.CreateUserHandler",
               "Runtime": "java17",
@@ -1003,7 +1569,13 @@
               "Environment": {
                 "Variables": {
                   "ENVIRONMENT": "dev",
-                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                  "USER_CREATED_QUEUE_URL": {
+                    "Ref": "UserCreatedQueue"
+                  },
+                  "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                    "Ref": "EmailNotificationTopic"
+                  }
                 }
               },
               "Role": {
@@ -1022,7 +1594,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
               },
               "Handler": "co.com.bancolombia.lambda.handler.GetUserHandler",
               "Runtime": "java17",
@@ -1033,7 +1605,13 @@
               "Environment": {
                 "Variables": {
                   "ENVIRONMENT": "dev",
-                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                  "USER_CREATED_QUEUE_URL": {
+                    "Ref": "UserCreatedQueue"
+                  },
+                  "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                    "Ref": "EmailNotificationTopic"
+                  }
                 }
               },
               "Role": {
@@ -1052,7 +1630,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
               },
               "Handler": "co.com.bancolombia.lambda.handler.UpdateUserHandler",
               "Runtime": "java17",
@@ -1063,7 +1641,13 @@
               "Environment": {
                 "Variables": {
                   "ENVIRONMENT": "dev",
-                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                  "USER_CREATED_QUEUE_URL": {
+                    "Ref": "UserCreatedQueue"
+                  },
+                  "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                    "Ref": "EmailNotificationTopic"
+                  }
                 }
               },
               "Role": {
@@ -1082,7 +1666,7 @@
             "Properties": {
               "Code": {
                 "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-                "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
               },
               "Handler": "co.com.bancolombia.lambda.handler.DeleteUserHandler",
               "Runtime": "java17",
@@ -1093,7 +1677,13 @@
               "Environment": {
                 "Variables": {
                   "ENVIRONMENT": "dev",
-                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                  "USER_CREATED_QUEUE_URL": {
+                    "Ref": "UserCreatedQueue"
+                  },
+                  "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                    "Ref": "EmailNotificationTopic"
+                  }
                 }
               },
               "Role": {
@@ -1107,48 +1697,120 @@
               "DeleteUserJavaLogGroup"
             ]
           },
-          "CreateUserJavaLambdaVersionMn6OJeHqnpvmAhL4124aBAFoCR1FU8oKwxJSYJB4aMk": {
+          "EnviarCorreosJavaLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+                "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
+              },
+              "Handler": "co.com.bancolombia.lambda.handler.EnviarCorreosHandler",
+              "Runtime": "java17",
+              "FunctionName": "reto-aws-serverless-users-dev-enviarCorreosJava",
+              "MemorySize": 256,
+              "Timeout": 30,
+              "Description": "Send welcome email notifications via SNS (Java implementation)",
+              "Environment": {
+                "Variables": {
+                  "ENVIRONMENT": "dev",
+                  "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                  "USER_CREATED_QUEUE_URL": {
+                    "Ref": "UserCreatedQueue"
+                  },
+                  "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                    "Ref": "EmailNotificationTopic"
+                  }
+                }
+              },
+              "Role": {
+                "Fn::GetAtt": [
+                  "IamRoleLambdaExecution",
+                  "Arn"
+                ]
+              }
+            },
+            "DependsOn": [
+              "EnviarCorreosJavaLogGroup"
+            ]
+          },
+          "CreateUserJavaLambdaVersionYMGASpPG1AMg7wuTDf18OGGj8jO96QBU6B43SGEp5I": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateUserJavaLambdaFunction"
               },
-              "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+              "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
               "Description": "Create a new user (Java implementation)"
             }
           },
-          "GetUserJavaLambdaVersion00xjBVwcIUPTP0HYBQEF68GsxEAuyf8Zwsisburg": {
+          "GetUserJavaLambdaVersionCF19Hu6ZsSCBZ3LqrSWomu2Y325Dguxpu1iiWvAhaI": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetUserJavaLambdaFunction"
               },
-              "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+              "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
               "Description": "Get user by ID (Java implementation)"
             }
           },
-          "UpdateUserJavaLambdaVersion10cchSqWstEUD5HqkxEnoPu9i7aiPOZJRiCl2GTZk90": {
+          "UpdateUserJavaLambdaVersionpNe4vtcFpUuhchJJ8agj09oQ3RUXVq47MOdXcLYHsv4": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UpdateUserJavaLambdaFunction"
               },
-              "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+              "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
               "Description": "Update user by ID (Java implementation)"
             }
           },
-          "DeleteUserJavaLambdaVersionIakjwREtCPZQTOFEsNeneR5dAmkzN9wyhso5cKlJtc": {
+          "DeleteUserJavaLambdaVersiond1q5EtegBD1Cva5yryHT8o6OQMEMMJjGIEumtqJ1E": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DeleteUserJavaLambdaFunction"
               },
-              "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+              "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
               "Description": "Delete user by ID (Java implementation)"
+            }
+          },
+          "EnviarCorreosJavaLambdaVersionOEnfBHhEv7uR5NThqUTgEqAxZBiChdEP8xwuhj4fn8": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "EnviarCorreosJavaLambdaFunction"
+              },
+              "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
+              "Description": "Send welcome email notifications via SNS (Java implementation)"
+            }
+          },
+          "EnviarCorreosJavaEventSourceMappingSQSUserCreatedQueue": {
+            "Type": "AWS::Lambda::EventSourceMapping",
+            "DependsOn": [
+              "IamRoleLambdaExecution"
+            ],
+            "Properties": {
+              "BatchSize": 10,
+              "EventSourceArn": {
+                "Fn::GetAtt": [
+                  "UserCreatedQueue",
+                  "Arn"
+                ]
+              },
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "EnviarCorreosJavaLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Enabled": true,
+              "FunctionResponseTypes": [
+                "ReportBatchItemFailures"
+              ]
             }
           },
           "HttpApi": {
@@ -1470,6 +2132,89 @@
               }
             },
             "DependsOn": "HttpApiIntegrationDeleteUserJava"
+          },
+          "UserCreatedQueue": {
+            "Type": "AWS::SQS::Queue",
+            "Properties": {
+              "QueueName": "reto-aws-serverless-users-user-created-dev",
+              "VisibilityTimeout": 300,
+              "MessageRetentionPeriod": 1209600,
+              "RedrivePolicy": {
+                "deadLetterTargetArn": {
+                  "Fn::GetAtt": [
+                    "UserCreatedDLQ",
+                    "Arn"
+                  ]
+                },
+                "maxReceiveCount": 3
+              },
+              "Tags": [
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ]
+            }
+          },
+          "UserCreatedDLQ": {
+            "Type": "AWS::SQS::Queue",
+            "Properties": {
+              "QueueName": "reto-aws-serverless-users-user-created-dlq-dev",
+              "MessageRetentionPeriod": 1209600,
+              "Tags": [
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ]
+            }
+          },
+          "EmailNotificationTopic": {
+            "Type": "AWS::SNS::Topic",
+            "Properties": {
+              "TopicName": "reto-aws-serverless-users-email-notifications-dev",
+              "DisplayName": "User Email Notifications",
+              "Tags": [
+                {
+                  "Key": "Environment",
+                  "Value": "dev"
+                }
+              ]
+            }
+          },
+          "UserCreatedQueuePolicy": {
+            "Type": "AWS::SQS::QueuePolicy",
+            "Properties": {
+              "Queues": [
+                {
+                  "Ref": "UserCreatedQueue"
+                }
+              ],
+              "PolicyDocument": {
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "AWS": {
+                        "Fn::GetAtt": [
+                          "IamRoleLambdaExecution",
+                          "Arn"
+                        ]
+                      }
+                    },
+                    "Action": [
+                      "sqs:SendMessage"
+                    ],
+                    "Resource": {
+                      "Fn::GetAtt": [
+                        "UserCreatedQueue",
+                        "Arn"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
           }
         },
         "Outputs": {
@@ -1482,7 +2227,7 @@
           "CreateUserJavaLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateUserJavaLambdaVersionMn6OJeHqnpvmAhL4124aBAFoCR1FU8oKwxJSYJB4aMk"
+              "Ref": "CreateUserJavaLambdaVersionYMGASpPG1AMg7wuTDf18OGGj8jO96QBU6B43SGEp5I"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-CreateUserJavaLambdaFunctionQualifiedArn"
@@ -1491,7 +2236,7 @@
           "GetUserJavaLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetUserJavaLambdaVersion00xjBVwcIUPTP0HYBQEF68GsxEAuyf8Zwsisburg"
+              "Ref": "GetUserJavaLambdaVersionCF19Hu6ZsSCBZ3LqrSWomu2Y325Dguxpu1iiWvAhaI"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-GetUserJavaLambdaFunctionQualifiedArn"
@@ -1500,7 +2245,7 @@
           "UpdateUserJavaLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdateUserJavaLambdaVersion10cchSqWstEUD5HqkxEnoPu9i7aiPOZJRiCl2GTZk90"
+              "Ref": "UpdateUserJavaLambdaVersionpNe4vtcFpUuhchJJ8agj09oQ3RUXVq47MOdXcLYHsv4"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-UpdateUserJavaLambdaFunctionQualifiedArn"
@@ -1509,10 +2254,19 @@
           "DeleteUserJavaLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DeleteUserJavaLambdaVersionIakjwREtCPZQTOFEsNeneR5dAmkzN9wyhso5cKlJtc"
+              "Ref": "DeleteUserJavaLambdaVersiond1q5EtegBD1Cva5yryHT8o6OQMEMMJjGIEumtqJ1E"
             },
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-DeleteUserJavaLambdaFunctionQualifiedArn"
+            }
+          },
+          "EnviarCorreosJavaLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "EnviarCorreosJavaLambdaVersionOEnfBHhEv7uR5NThqUTgEqAxZBiChdEP8xwuhj4fn8"
+            },
+            "Export": {
+              "Name": "sls-reto-aws-serverless-users-dev-EnviarCorreosJavaLambdaFunctionQualifiedArn"
             }
           },
           "HttpApiId": {
@@ -1548,6 +2302,36 @@
             "Export": {
               "Name": "sls-reto-aws-serverless-users-dev-HttpApiUrl"
             }
+          },
+          "UserCreatedQueueUrl": {
+            "Description": "URL of the User Created SQS Queue",
+            "Value": {
+              "Ref": "UserCreatedQueue"
+            },
+            "Export": {
+              "Name": "reto-aws-serverless-users-dev-UserCreatedQueueUrl"
+            }
+          },
+          "UserCreatedQueueArn": {
+            "Description": "ARN of the User Created SQS Queue",
+            "Value": {
+              "Fn::GetAtt": [
+                "UserCreatedQueue",
+                "Arn"
+              ]
+            },
+            "Export": {
+              "Name": "reto-aws-serverless-users-dev-UserCreatedQueueArn"
+            }
+          },
+          "EmailNotificationTopicArn": {
+            "Description": "ARN of the Email Notification SNS Topic",
+            "Value": {
+              "Ref": "EmailNotificationTopic"
+            },
+            "Export": {
+              "Name": "reto-aws-serverless-users-dev-EmailNotificationTopicArn"
+            }
           }
         }
       },
@@ -1562,13 +2346,12 @@
       "serviceProvider": null,
       "instanceParameters": null
     },
-    "serviceRawFile": "service: reto-aws-serverless-users\r\n\r\nframeworkVersion: '4'\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: java17\r\n  region: ${env:AWS_REGION, 'us-east-1'}\r\n  stage: ${env:ENVIRONMENT, 'dev'}\r\n  environment:\r\n    ENVIRONMENT: ${env:ENVIRONMENT, 'dev'}\r\n    DYNAMODB_TABLE_NAME: ${self:service}-${self:provider.stage}\r\n  httpApi:\r\n    metrics: true\r\n  iam:\r\n    role:\r\n      statements:\r\n        - Effect: Allow\r\n          Action:\r\n            - dynamodb:PutItem\r\n            - dynamodb:GetItem\r\n            - dynamodb:UpdateItem\r\n            - dynamodb:DeleteItem\r\n            - dynamodb:Query\r\n            - dynamodb:Scan\r\n          Resource:\r\n            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME}\r\n            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME}/index/email-index\r\n\r\npackage:\r\n  individually: true\r\n\r\nfunctions:\r\n  createUserJava:\r\n    runtime: java17\r\n    handler: co.com.bancolombia.lambda.handler.CreateUserHandler\r\n    description: Create a new user (Java implementation)\r\n    package:\r\n      artifact: build/libs/serverless-java-all.jar\r\n    events:\r\n      - httpApi:\r\n          path: /api/serverless/users\r\n          method: post\r\n    timeout: 30\r\n    memorySize: 256\r\n\r\n  getUserJava:\r\n    runtime: java17\r\n    handler: co.com.bancolombia.lambda.handler.GetUserHandler\r\n    description: Get user by ID (Java implementation)\r\n    package:\r\n      artifact: build/libs/serverless-java-all.jar\r\n    events:\r\n      - httpApi:\r\n          path: /api/serverless/users/{id}\r\n          method: get\r\n    timeout: 30\r\n    memorySize: 256\r\n\r\n  updateUserJava:\r\n    runtime: java17\r\n    handler: co.com.bancolombia.lambda.handler.UpdateUserHandler\r\n    description: Update user by ID (Java implementation)\r\n    package:\r\n      artifact: build/libs/serverless-java-all.jar\r\n    events:\r\n      - httpApi:\r\n          path: /api/serverless/users/{id}\r\n          method: put\r\n    timeout: 30\r\n    memorySize: 256\r\n\r\n  deleteUserJava:\r\n    runtime: java17\r\n    handler: co.com.bancolombia.lambda.handler.DeleteUserHandler\r\n    description: Delete user by ID (Java implementation)\r\n    package:\r\n      artifact: build/libs/serverless-java-all.jar\r\n    events:\r\n      - httpApi:\r\n          path: /api/serverless/users/{id}\r\n          method: delete\r\n    timeout: 30\r\n    memorySize: 256\r\n\r\n",
+    "serviceRawFile": "service: reto-aws-serverless-users\r\n\r\nframeworkVersion: '4'\r\n\r\nprovider:\r\n  name: aws\r\n  runtime: java17\r\n  region: ${env:AWS_REGION, 'us-east-1'}\r\n  stage: ${env:ENVIRONMENT, 'dev'}\r\n  environment:\r\n    ENVIRONMENT: ${env:ENVIRONMENT, 'dev'}\r\n    DYNAMODB_TABLE_NAME: ${self:service}-${self:provider.stage}\r\n    USER_CREATED_QUEUE_URL:\r\n      Ref: UserCreatedQueue\r\n    EMAIL_NOTIFICATION_TOPIC_ARN:\r\n      Ref: EmailNotificationTopic\r\n  httpApi:\r\n    metrics: true\r\n  iam:\r\n    role:\r\n      statements:\r\n        - Effect: Allow\r\n          Action:\r\n            - dynamodb:PutItem\r\n            - dynamodb:GetItem\r\n            - dynamodb:UpdateItem\r\n            - dynamodb:DeleteItem\r\n            - dynamodb:Query\r\n            - dynamodb:Scan\r\n          Resource:\r\n            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME}\r\n            - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME}/index/email-index\r\n\r\n        - Effect: Allow\r\n          Action:\r\n            - sqs:SendMessage\r\n            - sqs:GetQueueUrl\r\n          Resource:\r\n            Fn::GetAtt:\r\n              - UserCreatedQueue\r\n              - Arn\r\n\r\n        - Effect: Allow\r\n          Action:\r\n            - sqs:ReceiveMessage\r\n            - sqs:DeleteMessage\r\n            - sqs:GetQueueAttributes\r\n          Resource:\r\n            Fn::GetAtt:\r\n              - UserCreatedQueue\r\n              - Arn\r\n\r\n        - Effect: Allow\r\n          Action:\r\n            - sns:Publish\r\n          Resource:\r\n            Ref: EmailNotificationTopic\r\n\r\npackage:\r\n  individually: true\r\n\r\nfunctions:\r\n  createUserJava:\r\n    runtime: java17\r\n    handler: co.com.bancolombia.lambda.handler.CreateUserHandler\r\n    description: Create a new user (Java implementation)\r\n    package:\r\n      artifact: build/libs/serverless-java-all.jar\r\n    events:\r\n      - httpApi:\r\n          path: /api/serverless/users\r\n          method: post\r\n    timeout: 30\r\n    memorySize: 256\r\n\r\n  getUserJava:\r\n    runtime: java17\r\n    handler: co.com.bancolombia.lambda.handler.GetUserHandler\r\n    description: Get user by ID (Java implementation)\r\n    package:\r\n      artifact: build/libs/serverless-java-all.jar\r\n    events:\r\n      - httpApi:\r\n          path: /api/serverless/users/{id}\r\n          method: get\r\n    timeout: 30\r\n    memorySize: 256\r\n\r\n  updateUserJava:\r\n    runtime: java17\r\n    handler: co.com.bancolombia.lambda.handler.UpdateUserHandler\r\n    description: Update user by ID (Java implementation)\r\n    package:\r\n      artifact: build/libs/serverless-java-all.jar\r\n    events:\r\n      - httpApi:\r\n          path: /api/serverless/users/{id}\r\n          method: put\r\n    timeout: 30\r\n    memorySize: 256\r\n\r\n  deleteUserJava:\r\n    runtime: java17\r\n    handler: co.com.bancolombia.lambda.handler.DeleteUserHandler\r\n    description: Delete user by ID (Java implementation)\r\n    package:\r\n      artifact: build/libs/serverless-java-all.jar\r\n    events:\r\n      - httpApi:\r\n          path: /api/serverless/users/{id}\r\n          method: delete\r\n    timeout: 30\r\n    memorySize: 256\r\n\r\n  enviarCorreosJava:\r\n    runtime: java17\r\n    handler: co.com.bancolombia.lambda.handler.EnviarCorreosHandler\r\n    description: Send welcome email notifications via SNS (Java implementation)\r\n    package:\r\n      artifact: build/libs/serverless-java-all.jar\r\n    events:\r\n      - sqs:\r\n          arn:\r\n            Fn::GetAtt:\r\n              - UserCreatedQueue\r\n              - Arn\r\n          batchSize: 10\r\n          maximumBatchingWindowInSeconds: 5\r\n          functionResponseType: ReportBatchItemFailures\r\n    timeout: 30\r\n    memorySize: 256\r\n\r\nresources:\r\n  Resources:\r\n    UserCreatedQueue:\r\n      Type: AWS::SQS::Queue\r\n      Properties:\r\n        QueueName: ${self:service}-user-created-${self:provider.stage}\r\n        VisibilityTimeout: 300\r\n        MessageRetentionPeriod: 1209600\r\n        RedrivePolicy:\r\n          deadLetterTargetArn:\r\n            Fn::GetAtt:\r\n              - UserCreatedDLQ\r\n              - Arn\r\n          maxReceiveCount: 3\r\n        Tags:\r\n          - Key: Environment\r\n            Value: ${self:provider.stage}\r\n\r\n    UserCreatedDLQ:\r\n      Type: AWS::SQS::Queue\r\n      Properties:\r\n        QueueName: ${self:service}-user-created-dlq-${self:provider.stage}\r\n        MessageRetentionPeriod: 1209600\r\n        Tags:\r\n          - Key: Environment\r\n            Value: ${self:provider.stage}\r\n\r\n    EmailNotificationTopic:\r\n      Type: AWS::SNS::Topic\r\n      Properties:\r\n        TopicName: ${self:service}-email-notifications-${self:provider.stage}\r\n        DisplayName: User Email Notifications\r\n        Tags:\r\n          - Key: Environment\r\n            Value: ${self:provider.stage}\r\n\r\n    UserCreatedQueuePolicy:\r\n      Type: AWS::SQS::QueuePolicy\r\n      Properties:\r\n        Queues:\r\n          - Ref: UserCreatedQueue\r\n        PolicyDocument:\r\n          Statement:\r\n            - Effect: Allow\r\n              Principal:\r\n                AWS:\r\n                  Fn::GetAtt:\r\n                    - IamRoleLambdaExecution\r\n                    - Arn\r\n              Action:\r\n                - sqs:SendMessage\r\n              Resource:\r\n                Fn::GetAtt:\r\n                  - UserCreatedQueue\r\n                  - Arn\r\n\r\n  Outputs:\r\n    UserCreatedQueueUrl:\r\n      Description: URL of the User Created SQS Queue\r\n      Value:\r\n        Ref: UserCreatedQueue\r\n      Export:\r\n        Name: ${self:service}-${self:provider.stage}-UserCreatedQueueUrl\r\n\r\n    UserCreatedQueueArn:\r\n      Description: ARN of the User Created SQS Queue\r\n      Value:\r\n        Fn::GetAtt:\r\n          - UserCreatedQueue\r\n          - Arn\r\n      Export:\r\n        Name: ${self:service}-${self:provider.stage}-UserCreatedQueueArn\r\n\r\n    EmailNotificationTopicArn:\r\n      Description: ARN of the Email Notification SNS Topic\r\n      Value:\r\n        Ref: EmailNotificationTopic\r\n      Export:\r\n        Name: ${self:service}-${self:provider.stage}-EmailNotificationTopicArn\r\n\r\n",
     "command": [
       "deploy"
     ],
     "options": {
-      "stage": "dev",
-      "region": "us-east-1"
+      "stage": "dev"
     },
     "orgId": "8ced6102-4a9e-4343-b891-41e724798c73",
     "orgName": "sebastianbaezr",
@@ -1578,32 +2361,56 @@
     "serviceProviderAwsCfStackName": "reto-aws-serverless-users-dev",
     "serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-1:041065662579:stack/reto-aws-serverless-users-dev/61b7ab80-f7df-11f0-866b-12817cb06705",
     "serviceProviderAwsCfStackCreated": "2026-01-22T22:12:03.922Z",
-    "serviceProviderAwsCfStackUpdated": "2026-01-23T22:30:48.741Z",
+    "serviceProviderAwsCfStackUpdated": "2026-01-26T20:21:16.077Z",
     "serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
     "serviceProviderAwsCfStackOutputs": [
       {
         "OutputKey": "UpdateUserNodeLambdaFunctionQualifiedArn",
-        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-updateUserNode:10",
+        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-updateUserNode:12",
         "Description": "Current Lambda function version",
         "ExportName": "sls-reto-aws-serverless-users-dev-UpdateUserNodeLambdaFunctionQualifiedArn"
       },
       {
+        "OutputKey": "UserCreatedQueueArn",
+        "OutputValue": "arn:aws:sqs:us-east-1:041065662579:reto-aws-serverless-users-user-created-dev",
+        "Description": "ARN of the User Created SQS Queue",
+        "ExportName": "reto-aws-serverless-users-dev-UserCreatedQueueArn"
+      },
+      {
         "OutputKey": "GetUserNodeLambdaFunctionQualifiedArn",
-        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-getUserNode:10",
+        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-getUserNode:12",
         "Description": "Current Lambda function version",
         "ExportName": "sls-reto-aws-serverless-users-dev-GetUserNodeLambdaFunctionQualifiedArn"
       },
       {
+        "OutputKey": "UserCreatedQueueUrl",
+        "OutputValue": "https://sqs.us-east-1.amazonaws.com/041065662579/reto-aws-serverless-users-user-created-dev",
+        "Description": "URL of the User Created SQS Queue",
+        "ExportName": "reto-aws-serverless-users-dev-UserCreatedQueueUrl"
+      },
+      {
         "OutputKey": "CreateUserNodeLambdaFunctionQualifiedArn",
-        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-createUserNode:10",
+        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-createUserNode:12",
         "Description": "Current Lambda function version",
         "ExportName": "sls-reto-aws-serverless-users-dev-CreateUserNodeLambdaFunctionQualifiedArn"
       },
       {
         "OutputKey": "DeleteUserNodeLambdaFunctionQualifiedArn",
-        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-deleteUserNode:10",
+        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-deleteUserNode:12",
         "Description": "Current Lambda function version",
         "ExportName": "sls-reto-aws-serverless-users-dev-DeleteUserNodeLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "EnviarCorreosNodeLambdaFunctionQualifiedArn",
+        "OutputValue": "arn:aws:lambda:us-east-1:041065662579:function:reto-aws-serverless-users-dev-enviarCorreosNode:2",
+        "Description": "Current Lambda function version",
+        "ExportName": "sls-reto-aws-serverless-users-dev-EnviarCorreosNodeLambdaFunctionQualifiedArn"
+      },
+      {
+        "OutputKey": "EmailNotificationTopicArn",
+        "OutputValue": "arn:aws:sns:us-east-1:041065662579:reto-aws-serverless-users-email-notifications-dev",
+        "Description": "ARN of the Email Notification SNS Topic",
+        "ExportName": "reto-aws-serverless-users-dev-EmailNotificationTopicArn"
       },
       {
         "OutputKey": "HttpApiId",
@@ -1649,6 +2456,12 @@
           "Type": "AWS::Logs::LogGroup",
           "Properties": {
             "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-deleteUserJava"
+          }
+        },
+        "EnviarCorreosJavaLogGroup": {
+          "Type": "AWS::Logs::LogGroup",
+          "Properties": {
+            "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-enviarCorreosJava"
           }
         },
         "IamRoleLambdaExecution": {
@@ -1723,6 +2536,58 @@
                         "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev",
                         "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev/index/email-index"
                       ]
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "sqs:SendMessage",
+                        "sqs:GetQueueUrl"
+                      ],
+                      "Resource": {
+                        "Fn::GetAtt": [
+                          "UserCreatedQueue",
+                          "Arn"
+                        ]
+                      }
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "sqs:ReceiveMessage",
+                        "sqs:DeleteMessage",
+                        "sqs:GetQueueAttributes"
+                      ],
+                      "Resource": {
+                        "Fn::GetAtt": [
+                          "UserCreatedQueue",
+                          "Arn"
+                        ]
+                      }
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "sns:Publish"
+                      ],
+                      "Resource": {
+                        "Ref": "EmailNotificationTopic"
+                      }
+                    },
+                    {
+                      "Effect": "Allow",
+                      "Action": [
+                        "sqs:ReceiveMessage",
+                        "sqs:DeleteMessage",
+                        "sqs:GetQueueAttributes"
+                      ],
+                      "Resource": [
+                        {
+                          "Fn::GetAtt": [
+                            "UserCreatedQueue",
+                            "Arn"
+                          ]
+                        }
+                      ]
                     }
                   ]
                 }
@@ -1749,7 +2614,7 @@
           "Properties": {
             "Code": {
               "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-              "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+              "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
             },
             "Handler": "co.com.bancolombia.lambda.handler.CreateUserHandler",
             "Runtime": "java17",
@@ -1760,7 +2625,13 @@
             "Environment": {
               "Variables": {
                 "ENVIRONMENT": "dev",
-                "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                "USER_CREATED_QUEUE_URL": {
+                  "Ref": "UserCreatedQueue"
+                },
+                "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                  "Ref": "EmailNotificationTopic"
+                }
               }
             },
             "Role": {
@@ -1779,7 +2650,7 @@
           "Properties": {
             "Code": {
               "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-              "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+              "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
             },
             "Handler": "co.com.bancolombia.lambda.handler.GetUserHandler",
             "Runtime": "java17",
@@ -1790,7 +2661,13 @@
             "Environment": {
               "Variables": {
                 "ENVIRONMENT": "dev",
-                "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                "USER_CREATED_QUEUE_URL": {
+                  "Ref": "UserCreatedQueue"
+                },
+                "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                  "Ref": "EmailNotificationTopic"
+                }
               }
             },
             "Role": {
@@ -1809,7 +2686,7 @@
           "Properties": {
             "Code": {
               "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-              "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+              "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
             },
             "Handler": "co.com.bancolombia.lambda.handler.UpdateUserHandler",
             "Runtime": "java17",
@@ -1820,7 +2697,13 @@
             "Environment": {
               "Variables": {
                 "ENVIRONMENT": "dev",
-                "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                "USER_CREATED_QUEUE_URL": {
+                  "Ref": "UserCreatedQueue"
+                },
+                "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                  "Ref": "EmailNotificationTopic"
+                }
               }
             },
             "Role": {
@@ -1839,7 +2722,7 @@
           "Properties": {
             "Code": {
               "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-              "S3Key": "serverless/reto-aws-serverless-users/dev/1769207871492-2026-01-23T22:37:51.492Z/serverless-java-all.jar"
+              "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
             },
             "Handler": "co.com.bancolombia.lambda.handler.DeleteUserHandler",
             "Runtime": "java17",
@@ -1850,7 +2733,13 @@
             "Environment": {
               "Variables": {
                 "ENVIRONMENT": "dev",
-                "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev"
+                "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                "USER_CREATED_QUEUE_URL": {
+                  "Ref": "UserCreatedQueue"
+                },
+                "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                  "Ref": "EmailNotificationTopic"
+                }
               }
             },
             "Role": {
@@ -1864,48 +2753,120 @@
             "DeleteUserJavaLogGroup"
           ]
         },
-        "CreateUserJavaLambdaVersionMn6OJeHqnpvmAhL4124aBAFoCR1FU8oKwxJSYJB4aMk": {
+        "EnviarCorreosJavaLambdaFunction": {
+          "Type": "AWS::Lambda::Function",
+          "Properties": {
+            "Code": {
+              "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
+              "S3Key": "serverless/reto-aws-serverless-users/dev/1769460643868-2026-01-26T20:50:43.868Z/serverless-java-all.jar"
+            },
+            "Handler": "co.com.bancolombia.lambda.handler.EnviarCorreosHandler",
+            "Runtime": "java17",
+            "FunctionName": "reto-aws-serverless-users-dev-enviarCorreosJava",
+            "MemorySize": 256,
+            "Timeout": 30,
+            "Description": "Send welcome email notifications via SNS (Java implementation)",
+            "Environment": {
+              "Variables": {
+                "ENVIRONMENT": "dev",
+                "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+                "USER_CREATED_QUEUE_URL": {
+                  "Ref": "UserCreatedQueue"
+                },
+                "EMAIL_NOTIFICATION_TOPIC_ARN": {
+                  "Ref": "EmailNotificationTopic"
+                }
+              }
+            },
+            "Role": {
+              "Fn::GetAtt": [
+                "IamRoleLambdaExecution",
+                "Arn"
+              ]
+            }
+          },
+          "DependsOn": [
+            "EnviarCorreosJavaLogGroup"
+          ]
+        },
+        "CreateUserJavaLambdaVersionYMGASpPG1AMg7wuTDf18OGGj8jO96QBU6B43SGEp5I": {
           "Type": "AWS::Lambda::Version",
           "DeletionPolicy": "Retain",
           "Properties": {
             "FunctionName": {
               "Ref": "CreateUserJavaLambdaFunction"
             },
-            "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+            "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
             "Description": "Create a new user (Java implementation)"
           }
         },
-        "GetUserJavaLambdaVersion00xjBVwcIUPTP0HYBQEF68GsxEAuyf8Zwsisburg": {
+        "GetUserJavaLambdaVersionCF19Hu6ZsSCBZ3LqrSWomu2Y325Dguxpu1iiWvAhaI": {
           "Type": "AWS::Lambda::Version",
           "DeletionPolicy": "Retain",
           "Properties": {
             "FunctionName": {
               "Ref": "GetUserJavaLambdaFunction"
             },
-            "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+            "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
             "Description": "Get user by ID (Java implementation)"
           }
         },
-        "UpdateUserJavaLambdaVersion10cchSqWstEUD5HqkxEnoPu9i7aiPOZJRiCl2GTZk90": {
+        "UpdateUserJavaLambdaVersionpNe4vtcFpUuhchJJ8agj09oQ3RUXVq47MOdXcLYHsv4": {
           "Type": "AWS::Lambda::Version",
           "DeletionPolicy": "Retain",
           "Properties": {
             "FunctionName": {
               "Ref": "UpdateUserJavaLambdaFunction"
             },
-            "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+            "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
             "Description": "Update user by ID (Java implementation)"
           }
         },
-        "DeleteUserJavaLambdaVersionIakjwREtCPZQTOFEsNeneR5dAmkzN9wyhso5cKlJtc": {
+        "DeleteUserJavaLambdaVersiond1q5EtegBD1Cva5yryHT8o6OQMEMMJjGIEumtqJ1E": {
           "Type": "AWS::Lambda::Version",
           "DeletionPolicy": "Retain",
           "Properties": {
             "FunctionName": {
               "Ref": "DeleteUserJavaLambdaFunction"
             },
-            "CodeSha256": "WDpLNVgHy+bHKzMl2eO/vP616Ol2JThGkCye9VrMmA4=",
+            "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
             "Description": "Delete user by ID (Java implementation)"
+          }
+        },
+        "EnviarCorreosJavaLambdaVersionOEnfBHhEv7uR5NThqUTgEqAxZBiChdEP8xwuhj4fn8": {
+          "Type": "AWS::Lambda::Version",
+          "DeletionPolicy": "Retain",
+          "Properties": {
+            "FunctionName": {
+              "Ref": "EnviarCorreosJavaLambdaFunction"
+            },
+            "CodeSha256": "l4mY9goQ4+NxBhjikItvuMF0wUhag4SGOnl3Mbo2Rgw=",
+            "Description": "Send welcome email notifications via SNS (Java implementation)"
+          }
+        },
+        "EnviarCorreosJavaEventSourceMappingSQSUserCreatedQueue": {
+          "Type": "AWS::Lambda::EventSourceMapping",
+          "DependsOn": [
+            "IamRoleLambdaExecution"
+          ],
+          "Properties": {
+            "BatchSize": 10,
+            "EventSourceArn": {
+              "Fn::GetAtt": [
+                "UserCreatedQueue",
+                "Arn"
+              ]
+            },
+            "FunctionName": {
+              "Fn::GetAtt": [
+                "EnviarCorreosJavaLambdaFunction",
+                "Arn"
+              ]
+            },
+            "Enabled": true,
+            "FunctionResponseTypes": [
+              "ReportBatchItemFailures"
+            ]
           }
         },
         "HttpApi": {
@@ -2227,6 +3188,89 @@
             }
           },
           "DependsOn": "HttpApiIntegrationDeleteUserJava"
+        },
+        "UserCreatedQueue": {
+          "Type": "AWS::SQS::Queue",
+          "Properties": {
+            "QueueName": "reto-aws-serverless-users-user-created-dev",
+            "VisibilityTimeout": 300,
+            "MessageRetentionPeriod": 1209600,
+            "RedrivePolicy": {
+              "deadLetterTargetArn": {
+                "Fn::GetAtt": [
+                  "UserCreatedDLQ",
+                  "Arn"
+                ]
+              },
+              "maxReceiveCount": 3
+            },
+            "Tags": [
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              }
+            ]
+          }
+        },
+        "UserCreatedDLQ": {
+          "Type": "AWS::SQS::Queue",
+          "Properties": {
+            "QueueName": "reto-aws-serverless-users-user-created-dlq-dev",
+            "MessageRetentionPeriod": 1209600,
+            "Tags": [
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              }
+            ]
+          }
+        },
+        "EmailNotificationTopic": {
+          "Type": "AWS::SNS::Topic",
+          "Properties": {
+            "TopicName": "reto-aws-serverless-users-email-notifications-dev",
+            "DisplayName": "User Email Notifications",
+            "Tags": [
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              }
+            ]
+          }
+        },
+        "UserCreatedQueuePolicy": {
+          "Type": "AWS::SQS::QueuePolicy",
+          "Properties": {
+            "Queues": [
+              {
+                "Ref": "UserCreatedQueue"
+              }
+            ],
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Principal": {
+                    "AWS": {
+                      "Fn::GetAtt": [
+                        "IamRoleLambdaExecution",
+                        "Arn"
+                      ]
+                    }
+                  },
+                  "Action": [
+                    "sqs:SendMessage"
+                  ],
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "UserCreatedQueue",
+                      "Arn"
+                    ]
+                  }
+                }
+              ]
+            }
+          }
         }
       },
       "Outputs": {
@@ -2239,7 +3283,7 @@
         "CreateUserJavaLambdaFunctionQualifiedArn": {
           "Description": "Current Lambda function version",
           "Value": {
-            "Ref": "CreateUserJavaLambdaVersionMn6OJeHqnpvmAhL4124aBAFoCR1FU8oKwxJSYJB4aMk"
+            "Ref": "CreateUserJavaLambdaVersionYMGASpPG1AMg7wuTDf18OGGj8jO96QBU6B43SGEp5I"
           },
           "Export": {
             "Name": "sls-reto-aws-serverless-users-dev-CreateUserJavaLambdaFunctionQualifiedArn"
@@ -2248,7 +3292,7 @@
         "GetUserJavaLambdaFunctionQualifiedArn": {
           "Description": "Current Lambda function version",
           "Value": {
-            "Ref": "GetUserJavaLambdaVersion00xjBVwcIUPTP0HYBQEF68GsxEAuyf8Zwsisburg"
+            "Ref": "GetUserJavaLambdaVersionCF19Hu6ZsSCBZ3LqrSWomu2Y325Dguxpu1iiWvAhaI"
           },
           "Export": {
             "Name": "sls-reto-aws-serverless-users-dev-GetUserJavaLambdaFunctionQualifiedArn"
@@ -2257,7 +3301,7 @@
         "UpdateUserJavaLambdaFunctionQualifiedArn": {
           "Description": "Current Lambda function version",
           "Value": {
-            "Ref": "UpdateUserJavaLambdaVersion10cchSqWstEUD5HqkxEnoPu9i7aiPOZJRiCl2GTZk90"
+            "Ref": "UpdateUserJavaLambdaVersionpNe4vtcFpUuhchJJ8agj09oQ3RUXVq47MOdXcLYHsv4"
           },
           "Export": {
             "Name": "sls-reto-aws-serverless-users-dev-UpdateUserJavaLambdaFunctionQualifiedArn"
@@ -2266,10 +3310,19 @@
         "DeleteUserJavaLambdaFunctionQualifiedArn": {
           "Description": "Current Lambda function version",
           "Value": {
-            "Ref": "DeleteUserJavaLambdaVersionIakjwREtCPZQTOFEsNeneR5dAmkzN9wyhso5cKlJtc"
+            "Ref": "DeleteUserJavaLambdaVersiond1q5EtegBD1Cva5yryHT8o6OQMEMMJjGIEumtqJ1E"
           },
           "Export": {
             "Name": "sls-reto-aws-serverless-users-dev-DeleteUserJavaLambdaFunctionQualifiedArn"
+          }
+        },
+        "EnviarCorreosJavaLambdaFunctionQualifiedArn": {
+          "Description": "Current Lambda function version",
+          "Value": {
+            "Ref": "EnviarCorreosJavaLambdaVersionOEnfBHhEv7uR5NThqUTgEqAxZBiChdEP8xwuhj4fn8"
+          },
+          "Export": {
+            "Name": "sls-reto-aws-serverless-users-dev-EnviarCorreosJavaLambdaFunctionQualifiedArn"
           }
         },
         "HttpApiId": {
@@ -2304,6 +3357,36 @@
           },
           "Export": {
             "Name": "sls-reto-aws-serverless-users-dev-HttpApiUrl"
+          }
+        },
+        "UserCreatedQueueUrl": {
+          "Description": "URL of the User Created SQS Queue",
+          "Value": {
+            "Ref": "UserCreatedQueue"
+          },
+          "Export": {
+            "Name": "reto-aws-serverless-users-dev-UserCreatedQueueUrl"
+          }
+        },
+        "UserCreatedQueueArn": {
+          "Description": "ARN of the User Created SQS Queue",
+          "Value": {
+            "Fn::GetAtt": [
+              "UserCreatedQueue",
+              "Arn"
+            ]
+          },
+          "Export": {
+            "Name": "reto-aws-serverless-users-dev-UserCreatedQueueArn"
+          }
+        },
+        "EmailNotificationTopicArn": {
+          "Description": "ARN of the Email Notification SNS Topic",
+          "Value": {
+            "Ref": "EmailNotificationTopic"
+          },
+          "Export": {
+            "Name": "reto-aws-serverless-users-dev-EmailNotificationTopicArn"
           }
         }
       }

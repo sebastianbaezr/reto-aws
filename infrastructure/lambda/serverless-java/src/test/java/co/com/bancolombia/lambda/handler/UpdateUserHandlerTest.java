@@ -57,7 +57,7 @@ class UpdateUserHandlerTest {
         // Arrange
         Map<String, Object> input = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
-        pathParameters.put("id", "3");
+        pathParameters.put("id", "550e8400-e29b-41d4-a716-446655440001");
         input.put("pathParameters", pathParameters);
         
         String requestBody = "{\"nombre\":\"Updated Name\",\"email\":\"updated.user@test.com\"}";
@@ -72,19 +72,19 @@ class UpdateUserHandlerTest {
                 .email("updated.user@test.com")
                 .build();
         User updatedUser = User.builder()
-                .id(3L)
+                .id("550e8400-e29b-41d4-a716-446655440001")
                 .nombre("Updated Name")
                 .email("updated.user@test.com")
                 .build();
         UserResponseDto responseDto = UserResponseDto.builder()
-                .id(3L)
+                .id("550e8400-e29b-41d4-a716-446655440001")
                 .nombre("Updated Name")
                 .email("updated.user@test.com")
                 .build();
         
         when(jsonSerializer.fromJson(requestBody, UserRequestDto.class)).thenReturn(requestDto);
         when(userMapper.requestToModel(requestDto)).thenReturn(user);
-        when(updateUserUseCase.execute(3L, user)).thenReturn(updatedUser);
+        when(updateUserUseCase.execute("550e8400-e29b-41d4-a716-446655440001", user)).thenReturn(updatedUser);
         when(userMapper.modelToResponse(updatedUser)).thenReturn(responseDto);
         when(jsonSerializer.toJson(responseDto)).thenReturn("{\"id\":3,\"nombre\":\"Updated Name\",\"email\":\"updated.user@test.com\"}");
         
@@ -95,7 +95,7 @@ class UpdateUserHandlerTest {
         assertEquals(200, response.getStatusCode());
         assertNotNull(response.getBody());
         verify(validationService).validate(requestDto);
-        verify(updateUserUseCase).execute(3L, user);
+        verify(updateUserUseCase).execute("550e8400-e29b-41d4-a716-446655440001", user);
     }
 
     @Test
@@ -103,7 +103,7 @@ class UpdateUserHandlerTest {
         // Arrange
         Map<String, Object> input = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
-        pathParameters.put("id", "999");
+        pathParameters.put("id", "550e8400-e29b-41d4-a716-446655440999");
         input.put("pathParameters", pathParameters);
         
         String requestBody = "{\"nombre\":\"Updated Name\",\"email\":\"updated@test.com\"}";
@@ -120,7 +120,7 @@ class UpdateUserHandlerTest {
         
         when(jsonSerializer.fromJson(requestBody, UserRequestDto.class)).thenReturn(requestDto);
         when(userMapper.requestToModel(requestDto)).thenReturn(user);
-        when(updateUserUseCase.execute(999L, user)).thenThrow(new LambdaException("User not found with ID: 999", 404));
+        when(updateUserUseCase.execute("550e8400-e29b-41d4-a716-446655440999", user)).thenThrow(new LambdaException("User not found with ID: 550e8400-e29b-41d4-a716-446655440999", 404));
         when(responseFactory.createError("User not found with ID: 999"))
                 .thenReturn(new co.com.bancolombia.lambda.dto.ErrorResponseDto("User not found with ID: 999"));
         when(jsonSerializer.toJson(any())).thenReturn("{\"error\":\"User not found with ID: 999\"}");
@@ -132,7 +132,7 @@ class UpdateUserHandlerTest {
         assertEquals(404, response.getStatusCode());
         assertNotNull(response.getBody());
         verify(validationService).validate(requestDto);
-        verify(updateUserUseCase).execute(999L, user);
+        verify(updateUserUseCase).execute("550e8400-e29b-41d4-a716-446655440999", user);
     }
 
     @Test
@@ -163,7 +163,7 @@ class UpdateUserHandlerTest {
         // Arrange
         Map<String, Object> input = new HashMap<>();
         Map<String, String> pathParameters = new HashMap<>();
-        pathParameters.put("id", "1");
+        pathParameters.put("id", "550e8400-e29b-41d4-a716-446655440002");
         input.put("pathParameters", pathParameters);
         input.put("body", "");
         
@@ -203,7 +203,7 @@ class UpdateUserHandlerTest {
         
         when(jsonSerializer.fromJson(requestBody, UserRequestDto.class)).thenReturn(requestDto);
         when(userMapper.requestToModel(requestDto)).thenReturn(user);
-        when(updateUserUseCase.execute(2L, user)).thenThrow(new ValidationException("Email already exists: juan.perez@bancolombia.com"));
+        when(updateUserUseCase.execute("550e8400-e29b-41d4-a716-446655440002", user)).thenThrow(new ValidationException("Email already exists: juan.perez@bancolombia.com"));
         when(responseFactory.createError("Email already exists: juan.perez@bancolombia.com"))
                 .thenReturn(new co.com.bancolombia.lambda.dto.ErrorResponseDto("Email already exists: juan.perez@bancolombia.com"));
         when(jsonSerializer.toJson(any())).thenReturn("{\"error\":\"Email already exists: juan.perez@bancolombia.com\"}");
@@ -215,6 +215,6 @@ class UpdateUserHandlerTest {
         assertEquals(400, response.getStatusCode());
         assertNotNull(response.getBody());
         verify(validationService).validate(requestDto);
-        verify(updateUserUseCase).execute(2L, user);
+        verify(updateUserUseCase).execute("550e8400-e29b-41d4-a716-446655440002", user);
     }
 }

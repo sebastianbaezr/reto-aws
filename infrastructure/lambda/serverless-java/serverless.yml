@@ -10,6 +10,10 @@ provider:
   environment:
     ENVIRONMENT: ${env:ENVIRONMENT, 'dev'}
     DYNAMODB_TABLE_NAME: ${self:service}-${self:provider.stage}
+    USER_CREATED_QUEUE_URL:
+      Ref: UserCreatedQueue
+    EMAIL_NOTIFICATION_TOPIC_ARN:
+      Ref: EmailNotificationTopic
   httpApi:
     metrics: true
   iam:
@@ -26,6 +30,31 @@ provider:
           Resource:
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME}
             - arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE_NAME}/index/email-index
+
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+            - sqs:GetQueueUrl
+          Resource:
+            Fn::GetAtt:
+              - UserCreatedQueue
+              - Arn
+
+        - Effect: Allow
+          Action:
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            - sqs:GetQueueAttributes
+          Resource:
+            Fn::GetAtt:
+              - UserCreatedQueue
+              - Arn
+
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource:
+            Ref: EmailNotificationTopic
 
 package:
   individually: true
@@ -82,4 +111,102 @@ functions:
           method: delete
     timeout: 30
     memorySize: 256
+
+  enviarCorreosJava:
+    runtime: java17
+    handler: co.com.bancolombia.lambda.handler.EnviarCorreosHandler
+    description: Send welcome email notifications via SNS (Java implementation)
+    package:
+      artifact: build/libs/serverless-java-all.jar
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - UserCreatedQueue
+              - Arn
+          batchSize: 10
+          maximumBatchingWindowInSeconds: 5
+          functionResponseType: ReportBatchItemFailures
+    timeout: 30
+    memorySize: 256
+
+resources:
+  Resources:
+    UserCreatedQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-user-created-${self:provider.stage}
+        VisibilityTimeout: 300
+        MessageRetentionPeriod: 1209600
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+              - UserCreatedDLQ
+              - Arn
+          maxReceiveCount: 3
+        Tags:
+          - Key: Environment
+            Value: ${self:provider.stage}
+
+    UserCreatedDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-user-created-dlq-${self:provider.stage}
+        MessageRetentionPeriod: 1209600
+        Tags:
+          - Key: Environment
+            Value: ${self:provider.stage}
+
+    EmailNotificationTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:service}-email-notifications-${self:provider.stage}
+        DisplayName: User Email Notifications
+        Tags:
+          - Key: Environment
+            Value: ${self:provider.stage}
+
+    UserCreatedQueuePolicy:
+      Type: AWS::SQS::QueuePolicy
+      Properties:
+        Queues:
+          - Ref: UserCreatedQueue
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS:
+                  Fn::GetAtt:
+                    - IamRoleLambdaExecution
+                    - Arn
+              Action:
+                - sqs:SendMessage
+              Resource:
+                Fn::GetAtt:
+                  - UserCreatedQueue
+                  - Arn
+
+  Outputs:
+    UserCreatedQueueUrl:
+      Description: URL of the User Created SQS Queue
+      Value:
+        Ref: UserCreatedQueue
+      Export:
+        Name: ${self:service}-${self:provider.stage}-UserCreatedQueueUrl
+
+    UserCreatedQueueArn:
+      Description: ARN of the User Created SQS Queue
+      Value:
+        Fn::GetAtt:
+          - UserCreatedQueue
+          - Arn
+      Export:
+        Name: ${self:service}-${self:provider.stage}-UserCreatedQueueArn
+
+    EmailNotificationTopicArn:
+      Description: ARN of the Email Notification SNS Topic
+      Value:
+        Ref: EmailNotificationTopic
+      Export:
+        Name: ${self:service}-${self:provider.stage}-EmailNotificationTopicArn
 
