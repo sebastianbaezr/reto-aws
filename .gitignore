@@ -345,3 +345,4 @@ deployment/.env
 
 # Node.js
 serverless-nodejs/node_modules/
+serverless-nodejs/dist/
