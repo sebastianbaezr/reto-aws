@@ -1,4 +1,4 @@
-service: reto-aws-serverless-users
+service: reto-aws-serverless-users-java
 
 frameworkVersion: '4'
 
@@ -9,7 +9,7 @@ provider:
   stage: ${env:ENVIRONMENT, 'dev'}
   environment:
     ENVIRONMENT: ${env:ENVIRONMENT, 'dev'}
-    DYNAMODB_TABLE_NAME: ${self:service}-${self:provider.stage}
+    DYNAMODB_TABLE_NAME: java-${self:service}-${self:provider.stage}
     USER_CREATED_QUEUE_URL:
       Ref: UserCreatedQueue
     EMAIL_NOTIFICATION_TOPIC_ARN:
@@ -125,17 +125,44 @@ functions:
               - UserCreatedQueue
               - Arn
           batchSize: 10
-          maximumBatchingWindowInSeconds: 5
           functionResponseType: ReportBatchItemFailures
     timeout: 30
     memorySize: 256
 
 resources:
   Resources:
+    JavaUsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: java-${self:service}-${self:provider.stage}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: email-index
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: true
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        Tags:
+          - Key: Environment
+            Value: ${self:provider.stage}
+
     UserCreatedQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: ${self:service}-user-created-${self:provider.stage}
+        QueueName: java-${self:service}-user-created-${self:provider.stage}
         VisibilityTimeout: 300
         MessageRetentionPeriod: 1209600
         RedrivePolicy:
@@ -151,7 +178,7 @@ resources:
     UserCreatedDLQ:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: ${self:service}-user-created-dlq-${self:provider.stage}
+        QueueName: java-${self:service}-user-created-dlq-${self:provider.stage}
         MessageRetentionPeriod: 1209600
         Tags:
           - Key: Environment
@@ -160,7 +187,7 @@ resources:
     EmailNotificationTopic:
       Type: AWS::SNS::Topic
       Properties:
-        TopicName: ${self:service}-email-notifications-${self:provider.stage}
+        TopicName: java-${self:service}-email-notifications-${self:provider.stage}
         DisplayName: User Email Notifications
         Tags:
           - Key: Environment
@@ -209,4 +236,11 @@ resources:
         Ref: EmailNotificationTopic
       Export:
         Name: ${self:service}-${self:provider.stage}-EmailNotificationTopicArn
+
+    HttpApiId:
+      Description: ID of the HTTP API Gateway
+      Value:
+        Ref: HttpApi
+      Export:
+        Name: ${self:service}-${self:provider.stage}-HttpApiId
 

@@ -60,24 +60,23 @@ try {
 console.log('\n5️⃣  Creating deployment ZIP...');
 const zipPath = path.join(__dirname, 'nodejs-lambda.zip');
 try {
-  // Use archiver if available, otherwise use system zip command
-  try {
-    require('archiver');
-  } catch {
-    // If archiver not installed, try system zip
-    try {
-      execSync(`cd "${DIST_DIR}" && tar -czf "${zipPath}" .`, { stdio: 'inherit' });
-      console.log(`   ✓ Created compressed archive: nodejs-lambda.zip`);
-    } catch {
-      // Windows fallback: PowerShell compression
-      execSync(
-        `powershell -NoProfile -Command "Compress-Archive -Path '${DIST_DIR}/*' -DestinationPath '${zipPath}' -Force"`,
-        { stdio: 'inherit' }
-      );
-      console.log(`   ✓ Created ZIP archive: nodejs-lambda.zip`);
-    }
-  }
+  const archiver = require('archiver');
+  const output = fs.createWriteStream(zipPath);
+  const archive = archiver('zip', { zlib: { level: 9 } });
+
+  output.on('close', () => {
+    console.log(`   ✓ Created ZIP archive: nodejs-lambda.zip (${archive.pointer()} bytes)`);
+  });
+
+  archive.on('error', (err) => {
+    throw err;
+  });
+
+  archive.pipe(output);
+  archive.directory(DIST_DIR + '/', false);
+  archive.finalize();
 } catch (error) {
+  console.error('Error creating ZIP with archiver:', error.message);
   console.error('Note: ZIP creation failed, but dist/ directory is ready for deployment');
   console.log('   You can manually create the ZIP or upload the dist/ directory');
 }

@@ -5,31 +5,31 @@
     "CreateUserNodeLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-createUserNode"
+        "LogGroupName": "/aws/lambda/reto-aws-serverless-users-node-dev-createUserNode"
       }
     },
     "GetUserNodeLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-getUserNode"
+        "LogGroupName": "/aws/lambda/reto-aws-serverless-users-node-dev-getUserNode"
       }
     },
     "UpdateUserNodeLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-updateUserNode"
+        "LogGroupName": "/aws/lambda/reto-aws-serverless-users-node-dev-updateUserNode"
       }
     },
     "DeleteUserNodeLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-deleteUserNode"
+        "LogGroupName": "/aws/lambda/reto-aws-serverless-users-node-dev-deleteUserNode"
       }
     },
     "EnviarCorreosNodeLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/reto-aws-serverless-users-dev-enviarCorreosNode"
+        "LogGroupName": "/aws/lambda/reto-aws-serverless-users-node-dev-enviarCorreosNode"
       }
     },
     "IamRoleLambdaExecution": {
@@ -57,7 +57,7 @@
               "Fn::Join": [
                 "-",
                 [
-                  "reto-aws-serverless-users",
+                  "reto-aws-serverless-users-node",
                   "dev",
                   "lambda"
                 ]
@@ -75,7 +75,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-node-dev*:*"
                     }
                   ]
                 },
@@ -86,7 +86,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-dev*:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/reto-aws-serverless-users-node-dev*:*:*"
                     }
                   ]
                 },
@@ -100,8 +100,8 @@
                     "dynamodb:Query"
                   ],
                   "Resource": [
-                    "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev",
-                    "arn:aws:dynamodb:us-east-1:*:table/reto-aws-serverless-users-dev/index/email-index"
+                    "arn:aws:dynamodb:us-east-1:*:table/node-reto-aws-serverless-users-node-dev",
+                    "arn:aws:dynamodb:us-east-1:*:table/node-reto-aws-serverless-users-node-dev/index/email-index"
                   ]
                 },
                 {
@@ -165,7 +165,7 @@
           "Fn::Join": [
             "-",
             [
-              "reto-aws-serverless-users",
+              "reto-aws-serverless-users-node",
               "dev",
               {
                 "Ref": "AWS::Region"
@@ -181,18 +181,18 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-          "S3Key": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z/createUserNode.zip"
+          "S3Key": "serverless/reto-aws-serverless-users-node/dev/1769642774865-2026-01-28T23:26:14.865Z/createUserNode.zip"
         },
         "Handler": "src/handlers/createUser.createUser",
         "Runtime": "nodejs20.x",
-        "FunctionName": "reto-aws-serverless-users-dev-createUserNode",
+        "FunctionName": "reto-aws-serverless-users-node-dev-createUserNode",
         "MemorySize": 256,
         "Timeout": 30,
         "Description": "Create a new user (Node.js implementation)",
         "Environment": {
           "Variables": {
             "ENVIRONMENT": "dev",
-            "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+            "DYNAMODB_TABLE_NAME": "node-reto-aws-serverless-users-node-dev",
             "USER_CREATED_QUEUE_URL": {
               "Ref": "UserCreatedQueue"
             },
@@ -217,18 +217,18 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-          "S3Key": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z/getUserNode.zip"
+          "S3Key": "serverless/reto-aws-serverless-users-node/dev/1769642774865-2026-01-28T23:26:14.865Z/getUserNode.zip"
         },
         "Handler": "src/handlers/getUser.getUser",
         "Runtime": "nodejs20.x",
-        "FunctionName": "reto-aws-serverless-users-dev-getUserNode",
+        "FunctionName": "reto-aws-serverless-users-node-dev-getUserNode",
         "MemorySize": 256,
         "Timeout": 30,
         "Description": "Get user by ID (Node.js implementation)",
         "Environment": {
           "Variables": {
             "ENVIRONMENT": "dev",
-            "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+            "DYNAMODB_TABLE_NAME": "node-reto-aws-serverless-users-node-dev",
             "USER_CREATED_QUEUE_URL": {
               "Ref": "UserCreatedQueue"
             },
@@ -253,18 +253,18 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-          "S3Key": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z/updateUserNode.zip"
+          "S3Key": "serverless/reto-aws-serverless-users-node/dev/1769642774865-2026-01-28T23:26:14.865Z/updateUserNode.zip"
         },
         "Handler": "src/handlers/updateUser.updateUser",
         "Runtime": "nodejs20.x",
-        "FunctionName": "reto-aws-serverless-users-dev-updateUserNode",
+        "FunctionName": "reto-aws-serverless-users-node-dev-updateUserNode",
         "MemorySize": 256,
         "Timeout": 30,
         "Description": "Update user by ID (Node.js implementation)",
         "Environment": {
           "Variables": {
             "ENVIRONMENT": "dev",
-            "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+            "DYNAMODB_TABLE_NAME": "node-reto-aws-serverless-users-node-dev",
             "USER_CREATED_QUEUE_URL": {
               "Ref": "UserCreatedQueue"
             },
@@ -289,18 +289,18 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-          "S3Key": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z/deleteUserNode.zip"
+          "S3Key": "serverless/reto-aws-serverless-users-node/dev/1769642774865-2026-01-28T23:26:14.865Z/deleteUserNode.zip"
         },
         "Handler": "src/handlers/deleteUser.deleteUser",
         "Runtime": "nodejs20.x",
-        "FunctionName": "reto-aws-serverless-users-dev-deleteUserNode",
+        "FunctionName": "reto-aws-serverless-users-node-dev-deleteUserNode",
         "MemorySize": 256,
         "Timeout": 30,
         "Description": "Delete user by ID (Node.js implementation)",
         "Environment": {
           "Variables": {
             "ENVIRONMENT": "dev",
-            "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+            "DYNAMODB_TABLE_NAME": "node-reto-aws-serverless-users-node-dev",
             "USER_CREATED_QUEUE_URL": {
               "Ref": "UserCreatedQueue"
             },
@@ -325,18 +325,18 @@
       "Properties": {
         "Code": {
           "S3Bucket": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
-          "S3Key": "serverless/reto-aws-serverless-users/dev/1769461255936-2026-01-26T21:00:55.936Z/enviarCorreosNode.zip"
+          "S3Key": "serverless/reto-aws-serverless-users-node/dev/1769642774865-2026-01-28T23:26:14.865Z/enviarCorreosNode.zip"
         },
         "Handler": "src/handlers/enviarCorreos.enviarCorreos",
         "Runtime": "nodejs20.x",
-        "FunctionName": "reto-aws-serverless-users-dev-enviarCorreosNode",
+        "FunctionName": "reto-aws-serverless-users-node-dev-enviarCorreosNode",
         "MemorySize": 256,
         "Timeout": 30,
         "Description": "Send welcome email notifications via SNS (Node.js implementation)",
         "Environment": {
           "Variables": {
             "ENVIRONMENT": "dev",
-            "DYNAMODB_TABLE_NAME": "reto-aws-serverless-users-dev",
+            "DYNAMODB_TABLE_NAME": "node-reto-aws-serverless-users-node-dev",
             "USER_CREATED_QUEUE_URL": {
               "Ref": "UserCreatedQueue"
             },
@@ -356,58 +356,58 @@
         "EnviarCorreosNodeLogGroup"
       ]
     },
-    "GetUserNodeLambdaVersion7gmjddMeFsR9dPtHDcGGF1tRJRD78mcWXN8SQvQiIU": {
-      "Type": "AWS::Lambda::Version",
-      "DeletionPolicy": "Retain",
-      "Properties": {
-        "FunctionName": {
-          "Ref": "GetUserNodeLambdaFunction"
-        },
-        "CodeSha256": "DihHgsjTQNtV35G3j7k/JB1efFcCr16xMJAHeHWL0j8=",
-        "Description": "Get user by ID (Node.js implementation)"
-      }
-    },
-    "CreateUserNodeLambdaVersionsdZMCEwicqCPnj7aksMuDPAl22KvmrYO6LU9HnLL8": {
+    "CreateUserNodeLambdaVersion31TRokan1SIYnhHnTwR11JSpgpXHJUjEp3GyJvWdO8": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "CreateUserNodeLambdaFunction"
         },
-        "CodeSha256": "DihHgsjTQNtV35G3j7k/JB1efFcCr16xMJAHeHWL0j8=",
+        "CodeSha256": "SspkJ2FrzU7FgTR4vO4ZctPTaMryUVxocW8yK6mh+dY=",
         "Description": "Create a new user (Node.js implementation)"
       }
     },
-    "UpdateUserNodeLambdaVersion1o4doMdgD7IU2cKUoJiVjvkN726hOykRERBE7dxU": {
+    "UpdateUserNodeLambdaVersiongjuHYIVr6P2eFSzNmrWa9giWkFu9QmSa1q4BNHoFQ": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "UpdateUserNodeLambdaFunction"
         },
-        "CodeSha256": "DihHgsjTQNtV35G3j7k/JB1efFcCr16xMJAHeHWL0j8=",
+        "CodeSha256": "SspkJ2FrzU7FgTR4vO4ZctPTaMryUVxocW8yK6mh+dY=",
         "Description": "Update user by ID (Node.js implementation)"
       }
     },
-    "DeleteUserNodeLambdaVersionAM9d1GZ1i8aiYSWN5JrSZliZ6teA5CVMrY5H0gpWE": {
+    "DeleteUserNodeLambdaVersionmFCB7XARr56aZd4MG1EG0tLGY7fiRmCymDzMevlA": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "DeleteUserNodeLambdaFunction"
         },
-        "CodeSha256": "DihHgsjTQNtV35G3j7k/JB1efFcCr16xMJAHeHWL0j8=",
+        "CodeSha256": "SspkJ2FrzU7FgTR4vO4ZctPTaMryUVxocW8yK6mh+dY=",
         "Description": "Delete user by ID (Node.js implementation)"
       }
     },
-    "EnviarCorreosNodeLambdaVersionFZUKBmxUteLzSLpUQSKzEHMdjnUhCJIEJuBGV5yyk": {
+    "GetUserNodeLambdaVersionHNkUjvQ0uUN6B3G1WdhfUYzwxMMlzvmf3OjipM7r3tA": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetUserNodeLambdaFunction"
+        },
+        "CodeSha256": "SspkJ2FrzU7FgTR4vO4ZctPTaMryUVxocW8yK6mh+dY=",
+        "Description": "Get user by ID (Node.js implementation)"
+      }
+    },
+    "EnviarCorreosNodeLambdaVersionlGxfnYZRFH4bWA4niGCMWaUgf3HYw1Qha4XZsA6htU": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "EnviarCorreosNodeLambdaFunction"
         },
-        "CodeSha256": "DihHgsjTQNtV35G3j7k/JB1efFcCr16xMJAHeHWL0j8=",
+        "CodeSha256": "SspkJ2FrzU7FgTR4vO4ZctPTaMryUVxocW8yK6mh+dY=",
         "Description": "Send welcome email notifications via SNS (Node.js implementation)"
       }
     },
@@ -434,26 +434,6 @@
         "FunctionResponseTypes": [
           "ReportBatchItemFailures"
         ]
-      }
-    },
-    "HttpApi": {
-      "Type": "AWS::ApiGatewayV2::Api",
-      "Properties": {
-        "Name": "dev-reto-aws-serverless-users",
-        "ProtocolType": "HTTP"
-      }
-    },
-    "HttpApiStage": {
-      "Type": "AWS::ApiGatewayV2::Stage",
-      "Properties": {
-        "ApiId": {
-          "Ref": "HttpApi"
-        },
-        "StageName": "$default",
-        "AutoDeploy": true,
-        "DefaultRouteSettings": {
-          "DetailedMetricsEnabled": true
-        }
       }
     },
     "CreateUserNodeLambdaPermissionHttpApi": {
@@ -485,7 +465,7 @@
               },
               ":",
               {
-                "Ref": "HttpApi"
+                "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
               },
               "/*"
             ]
@@ -497,7 +477,7 @@
       "Type": "AWS::ApiGatewayV2::Integration",
       "Properties": {
         "ApiId": {
-          "Ref": "HttpApi"
+          "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
         },
         "IntegrationType": "AWS_PROXY",
         "IntegrationUri": {
@@ -510,13 +490,13 @@
         "TimeoutInMillis": 30000
       }
     },
-    "HttpApiRoutePostApiServerlessUsers": {
+    "HttpApiRoutePostApiServerlessUsersDashnode": {
       "Type": "AWS::ApiGatewayV2::Route",
       "Properties": {
         "ApiId": {
-          "Ref": "HttpApi"
+          "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
         },
-        "RouteKey": "POST /api/serverless/users",
+        "RouteKey": "POST /api/serverless/users-node",
         "Target": {
           "Fn::Join": [
             "/",
@@ -560,7 +540,7 @@
               },
               ":",
               {
-                "Ref": "HttpApi"
+                "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
               },
               "/*"
             ]
@@ -572,7 +552,7 @@
       "Type": "AWS::ApiGatewayV2::Integration",
       "Properties": {
         "ApiId": {
-          "Ref": "HttpApi"
+          "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
         },
         "IntegrationType": "AWS_PROXY",
         "IntegrationUri": {
@@ -585,13 +565,13 @@
         "TimeoutInMillis": 30000
       }
     },
-    "HttpApiRouteGetApiServerlessUsersIdVar": {
+    "HttpApiRouteGetApiServerlessUsersDashnodeIdVar": {
       "Type": "AWS::ApiGatewayV2::Route",
       "Properties": {
         "ApiId": {
-          "Ref": "HttpApi"
+          "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
         },
-        "RouteKey": "GET /api/serverless/users/{id}",
+        "RouteKey": "GET /api/serverless/users-node/{id}",
         "Target": {
           "Fn::Join": [
             "/",
@@ -635,7 +615,7 @@
               },
               ":",
               {
-                "Ref": "HttpApi"
+                "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
               },
               "/*"
             ]
@@ -647,7 +627,7 @@
       "Type": "AWS::ApiGatewayV2::Integration",
       "Properties": {
         "ApiId": {
-          "Ref": "HttpApi"
+          "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
         },
         "IntegrationType": "AWS_PROXY",
         "IntegrationUri": {
@@ -660,13 +640,13 @@
         "TimeoutInMillis": 30000
       }
     },
-    "HttpApiRoutePutApiServerlessUsersIdVar": {
+    "HttpApiRoutePutApiServerlessUsersDashnodeIdVar": {
       "Type": "AWS::ApiGatewayV2::Route",
       "Properties": {
         "ApiId": {
-          "Ref": "HttpApi"
+          "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
         },
-        "RouteKey": "PUT /api/serverless/users/{id}",
+        "RouteKey": "PUT /api/serverless/users-node/{id}",
         "Target": {
           "Fn::Join": [
             "/",
@@ -710,7 +690,7 @@
               },
               ":",
               {
-                "Ref": "HttpApi"
+                "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
               },
               "/*"
             ]
@@ -722,7 +702,7 @@
       "Type": "AWS::ApiGatewayV2::Integration",
       "Properties": {
         "ApiId": {
-          "Ref": "HttpApi"
+          "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
         },
         "IntegrationType": "AWS_PROXY",
         "IntegrationUri": {
@@ -735,13 +715,13 @@
         "TimeoutInMillis": 30000
       }
     },
-    "HttpApiRouteDeleteApiServerlessUsersIdVar": {
+    "HttpApiRouteDeleteApiServerlessUsersDashnodeIdVar": {
       "Type": "AWS::ApiGatewayV2::Route",
       "Properties": {
         "ApiId": {
-          "Ref": "HttpApi"
+          "Fn::ImportValue": "reto-aws-serverless-users-java-dev-HttpApiId"
         },
-        "RouteKey": "DELETE /api/serverless/users/{id}",
+        "RouteKey": "DELETE /api/serverless/users-node/{id}",
         "Target": {
           "Fn::Join": [
             "/",
@@ -756,10 +736,59 @@
       },
       "DependsOn": "HttpApiIntegrationDeleteUserNode"
     },
+    "NodeUsersTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "node-reto-aws-serverless-users-node-dev",
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "email",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "email-index",
+            "KeySchema": [
+              {
+                "AttributeName": "email",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "StreamSpecification": {
+          "StreamViewType": "NEW_AND_OLD_IMAGES"
+        },
+        "Tags": [
+          {
+            "Key": "Environment",
+            "Value": "dev"
+          }
+        ]
+      }
+    },
     "UserCreatedQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
-        "QueueName": "reto-aws-serverless-users-user-created-dev",
+        "QueueName": "node-reto-aws-serverless-users-node-user-created-dev",
         "VisibilityTimeout": 300,
         "MessageRetentionPeriod": 1209600,
         "RedrivePolicy": {
@@ -782,7 +811,7 @@
     "UserCreatedDLQ": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
-        "QueueName": "reto-aws-serverless-users-user-created-dlq-dev",
+        "QueueName": "node-reto-aws-serverless-users-node-user-created-dlq-dev",
         "MessageRetentionPeriod": 1209600,
         "Tags": [
           {
@@ -795,7 +824,7 @@
     "EmailNotificationTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
-        "TopicName": "reto-aws-serverless-users-email-notifications-dev",
+        "TopicName": "node-reto-aws-serverless-users-node-email-notifications-dev",
         "DisplayName": "User Email Notifications",
         "Tags": [
           {
@@ -844,86 +873,52 @@
     "ServerlessDeploymentBucketName": {
       "Value": "serverless-framework-deployments-us-east-1-b460883e-ba0e",
       "Export": {
-        "Name": "sls-reto-aws-serverless-users-dev-ServerlessDeploymentBucketName"
-      }
-    },
-    "GetUserNodeLambdaFunctionQualifiedArn": {
-      "Description": "Current Lambda function version",
-      "Value": {
-        "Ref": "GetUserNodeLambdaVersion7gmjddMeFsR9dPtHDcGGF1tRJRD78mcWXN8SQvQiIU"
-      },
-      "Export": {
-        "Name": "sls-reto-aws-serverless-users-dev-GetUserNodeLambdaFunctionQualifiedArn"
+        "Name": "sls-reto-aws-serverless-users-node-dev-ServerlessDeploymentBucketName"
       }
     },
     "CreateUserNodeLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CreateUserNodeLambdaVersionsdZMCEwicqCPnj7aksMuDPAl22KvmrYO6LU9HnLL8"
+        "Ref": "CreateUserNodeLambdaVersion31TRokan1SIYnhHnTwR11JSpgpXHJUjEp3GyJvWdO8"
       },
       "Export": {
-        "Name": "sls-reto-aws-serverless-users-dev-CreateUserNodeLambdaFunctionQualifiedArn"
+        "Name": "sls-reto-aws-serverless-users-node-dev-CreateUserNodeLambdaFunctionQualifiedArn"
       }
     },
     "UpdateUserNodeLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "UpdateUserNodeLambdaVersion1o4doMdgD7IU2cKUoJiVjvkN726hOykRERBE7dxU"
+        "Ref": "UpdateUserNodeLambdaVersiongjuHYIVr6P2eFSzNmrWa9giWkFu9QmSa1q4BNHoFQ"
       },
       "Export": {
-        "Name": "sls-reto-aws-serverless-users-dev-UpdateUserNodeLambdaFunctionQualifiedArn"
+        "Name": "sls-reto-aws-serverless-users-node-dev-UpdateUserNodeLambdaFunctionQualifiedArn"
       }
     },
     "DeleteUserNodeLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "DeleteUserNodeLambdaVersionAM9d1GZ1i8aiYSWN5JrSZliZ6teA5CVMrY5H0gpWE"
+        "Ref": "DeleteUserNodeLambdaVersionmFCB7XARr56aZd4MG1EG0tLGY7fiRmCymDzMevlA"
       },
       "Export": {
-        "Name": "sls-reto-aws-serverless-users-dev-DeleteUserNodeLambdaFunctionQualifiedArn"
+        "Name": "sls-reto-aws-serverless-users-node-dev-DeleteUserNodeLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetUserNodeLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetUserNodeLambdaVersionHNkUjvQ0uUN6B3G1WdhfUYzwxMMlzvmf3OjipM7r3tA"
+      },
+      "Export": {
+        "Name": "sls-reto-aws-serverless-users-node-dev-GetUserNodeLambdaFunctionQualifiedArn"
       }
     },
     "EnviarCorreosNodeLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "EnviarCorreosNodeLambdaVersionFZUKBmxUteLzSLpUQSKzEHMdjnUhCJIEJuBGV5yyk"
+        "Ref": "EnviarCorreosNodeLambdaVersionlGxfnYZRFH4bWA4niGCMWaUgf3HYw1Qha4XZsA6htU"
       },
       "Export": {
-        "Name": "sls-reto-aws-serverless-users-dev-EnviarCorreosNodeLambdaFunctionQualifiedArn"
-      }
-    },
-    "HttpApiId": {
-      "Description": "Id of the HTTP API",
-      "Value": {
-        "Ref": "HttpApi"
-      },
-      "Export": {
-        "Name": "sls-reto-aws-serverless-users-dev-HttpApiId"
-      }
-    },
-    "HttpApiUrl": {
-      "Description": "URL of the HTTP API",
-      "Value": {
-        "Fn::Join": [
-          "",
-          [
-            "https://",
-            {
-              "Ref": "HttpApi"
-            },
-            ".execute-api.",
-            {
-              "Ref": "AWS::Region"
-            },
-            ".",
-            {
-              "Ref": "AWS::URLSuffix"
-            }
-          ]
-        ]
-      },
-      "Export": {
-        "Name": "sls-reto-aws-serverless-users-dev-HttpApiUrl"
+        "Name": "sls-reto-aws-serverless-users-node-dev-EnviarCorreosNodeLambdaFunctionQualifiedArn"
       }
     },
     "UserCreatedQueueUrl": {
@@ -932,7 +927,7 @@
         "Ref": "UserCreatedQueue"
       },
       "Export": {
-        "Name": "reto-aws-serverless-users-dev-UserCreatedQueueUrl"
+        "Name": "reto-aws-serverless-users-node-dev-UserCreatedQueueUrl"
       }
     },
     "UserCreatedQueueArn": {
@@ -944,7 +939,7 @@
         ]
       },
       "Export": {
-        "Name": "reto-aws-serverless-users-dev-UserCreatedQueueArn"
+        "Name": "reto-aws-serverless-users-node-dev-UserCreatedQueueArn"
       }
     },
     "EmailNotificationTopicArn": {
@@ -953,7 +948,7 @@
         "Ref": "EmailNotificationTopic"
       },
       "Export": {
-        "Name": "reto-aws-serverless-users-dev-EmailNotificationTopicArn"
+        "Name": "reto-aws-serverless-users-node-dev-EmailNotificationTopicArn"
       }
     }
   }

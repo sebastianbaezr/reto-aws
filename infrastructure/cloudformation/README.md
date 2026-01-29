@@ -1,5 +1,7 @@
 # CloudFormation - Reto AWS
-## IaC Completa para HU7, HU8, HU9
+## IaC Independiente para HU7, HU8, HU9
+
+⚠️ **Nota**: Este stack es **completamente independiente** de los stacks de Serverless Framework (Java y Node). Se despliega por separado y no comparte recursos.
 
 ---
 
@@ -16,22 +18,36 @@
 ## 🎯 Qué Incluye el Template
 
 ### **HU7 - API Gateway + 8 Lambdas (CRUD)**
-- ✅ 1 API Gateway (HTTP API v2)
+- ✅ 1 API Gateway (HTTP API v2) - **Independiente**
 - ✅ 4 Endpoints: POST, GET, PUT, DELETE (/api/serverless/users)
 - ✅ 4 Lambdas Java (java17)
 - ✅ 4 Lambdas Node.js (nodejs20.x)
 
 ### **HU8 - DynamoDB (Privada)**
-- ✅ Tabla: id, nombre, email
+- ✅ Tabla: `cf-reto-aws-serverless-users-dev`
 - ✅ Acceso SOLO desde Lambda (vía IAM)
 - ✅ GSI en email
 - ✅ PITR + Streams habilitados
 
 ### **HU9 - SQS + SNS (Email Notifications)**
-- ✅ SQS Queue + DLQ (reintentos automáticos)
-- ✅ SNS Topic para emails
+- ✅ SQS Queue: `cf-reto-aws-serverless-users-user-created-dev`
+- ✅ SNS Topic: `cf-reto-aws-serverless-users-email-notifications-dev`
 - ✅ Event Source Mapping (SQS → Lambda)
 - ✅ Políticas IAM restrictivas
+
+---
+
+## 📌 Independencia de Stacks
+
+Este stack es **totalmente independiente**:
+
+| Aspecto | CloudFormation | Serverless Java | Serverless Node |
+|--------|---|---|---|
+| **API Gateway** | Propia | Propia (crea) | Usa la de Java |
+| **DynamoDB** | `cf-*` | `java-*` | `node-*` |
+| **SQS/SNS** | `cf-*` | `java-*` | `node-*` |
+| **Lambdas** | 8 (Java + Node) | 4 Java | 4 Node |
+| **Despliegue** | Separado | Separado | Separado |
 
 ---
 
@@ -78,13 +94,15 @@ aws cloudformation validate-template \
 
 ```bash
 aws cloudformation create-stack \
-  --stack-name reto-aws-serverless-users-dev-stack \
+  --stack-name reto-aws-serverless-users-cloudformation \
   --template-body file://infrastructure/cloudformation/reto-aws-main-stack.yaml \
   --parameters \
     ParameterKey=Environment,ParameterValue=dev \
     ParameterKey=ServiceName,ParameterValue=reto-aws-serverless-users \
-    ParameterKey=JavaLambdaZipPath,ParameterValue=s3://tu-bucket/serverless-java-all.jar \
-    ParameterKey=NodeLambdaZipPath,ParameterValue=s3://tu-bucket/nodejs-lambda.zip \
+    ParameterKey=JavaLambdaBucket,ParameterValue=tu-bucket \
+    ParameterKey=JavaLambdaKey,ParameterValue=serverless-java-all.jar \
+    ParameterKey=NodeLambdaBucket,ParameterValue=tu-bucket \
+    ParameterKey=NodeLambdaKey,ParameterValue=nodejs-lambda.zip \
   --capabilities CAPABILITY_NAMED_IAM \
   --region us-east-1
 ```
@@ -93,7 +111,7 @@ aws cloudformation create-stack \
 
 ```bash
 aws cloudformation wait stack-create-complete \
-  --stack-name reto-aws-serverless-users-dev-stack \
+  --stack-name reto-aws-serverless-users-cloudformation \
   --region us-east-1
 
 echo "✓ Stack creado exitosamente"
@@ -103,7 +121,7 @@ echo "✓ Stack creado exitosamente"
 
 ```bash
 aws cloudformation describe-stacks \
-  --stack-name reto-aws-serverless-users-dev-stack \
+  --stack-name reto-aws-serverless-users-cloudformation \
   --region us-east-1 \
   --query 'Stacks[0].Outputs'
 ```
@@ -162,24 +180,27 @@ Esto verifica:
 
 ## 📊 Arquitectura
 
-```
-Internet
-    ↓
-API GATEWAY (Pública)
-    ↓
-├─ POST   → CreateUser (Java/Node)   → DynamoDB + SQS
-├─ GET    → GetUser    (Java/Node)   → DynamoDB
-├─ PUT    → UpdateUser (Java/Node)   → DynamoDB
-└─ DELETE → DeleteUser (Java/Node)   → DynamoDB
+Este stack tiene su **propia arquitectura independiente**:
 
-SQS (Restringida)
-    ↓
-EnviarCorreos Lambda (Java/Node)
-    ↓
-SNS Topic (Restringida)
-    ↓
-Email
 ```
+CloudFormation Stack (INDEPENDIENTE)
+│
+├── API GATEWAY (Propia - cf-)
+│   ├─ POST   → CreateUser (Java/Node)   → DynamoDB (cf-) + SQS (cf-)
+│   ├─ GET    → GetUser    (Java/Node)   → DynamoDB (cf-)
+│   ├─ PUT    → UpdateUser (Java/Node)   → DynamoDB (cf-)
+│   └─ DELETE → DeleteUser (Java/Node)   → DynamoDB (cf-)
+│
+├── SQS Queue (cf-)
+│   └─ EnviarCorreos Lambda → SNS Topic (cf-)
+│
+└── DynamoDB Table (cf-)
+```
+
+**Notas:**
+- Los recursos de Serverless Java y Node tienen sus **propios** API Gateway, DynamoDB, SQS y SNS
+- No hay compartición de recursos entre CloudFormation y Serverless
+- Cada stack puede existir de forma independiente
 
 ---
 
@@ -200,24 +221,41 @@ Email
 # API Gateway
 aws logs tail /aws/apigateway/reto-aws-serverless-users-dev --follow
 
-# Lambda CreateUser
+# Lambda CreateUser (Java)
 aws logs tail /aws/lambda/reto-aws-serverless-users-dev-createUserJava --follow
+
+# Lambda CreateUser (Node)
+aws logs tail /aws/lambda/reto-aws-serverless-users-dev-createUserNode --follow
 
 # Lambda EnviarCorreos
 aws logs tail /aws/lambda/reto-aws-serverless-users-dev-enviarCorreosJava --follow
+
+# Ver todos los logs del stack
+aws logs describe-log-groups --log-group-name-prefix /aws/lambda/reto-aws-serverless-users
 ```
 
 ---
 
 ## 🗑️ Limpiar (Eliminar Stack)
 
+⚠️ **Nota**: Si también desplegó Serverless Java y Node, debe eliminarlos PRIMERO (en orden inverso: Node → Java → CloudFormation).
+
 ```bash
+# Eliminar Serverless Node (si existe)
+cd serverless-nodejs
+serverless remove --stage dev
+
+# Eliminar Serverless Java (si existe)
+cd infrastructure/lambda/serverless-java
+serverless remove --stage dev
+
+# Eliminar CloudFormation
 aws cloudformation delete-stack \
-  --stack-name reto-aws-serverless-users-dev-stack \
+  --stack-name reto-aws-serverless-users-cloudformation \
   --region us-east-1
 
 aws cloudformation wait stack-delete-complete \
-  --stack-name reto-aws-serverless-users-dev-stack \
+  --stack-name reto-aws-serverless-users-cloudformation \
   --region us-east-1
 
 echo "✓ Stack eliminado"
@@ -229,8 +267,10 @@ echo "✓ Stack eliminado"
 
 | Parámetro | Requerido | Por Defecto | Descripción |
 |-----------|-----------|------------|-------------|
-| JavaLambdaZipPath | ✅ Sí | - | S3 path del JAR Java |
-| NodeLambdaZipPath | ✅ Sí | - | S3 path del ZIP Node.js |
+| JavaLambdaBucket | ✅ Sí | - | Bucket S3 del JAR Java |
+| JavaLambdaKey | ✅ Sí | serverless-java-all.jar | Clave S3 del JAR Java |
+| NodeLambdaBucket | ✅ Sí | - | Bucket S3 del ZIP Node.js |
+| NodeLambdaKey | ✅ Sí | nodejs-lambda.zip | Clave S3 del ZIP Node.js |
 | ServiceName | No | reto-aws-serverless-users | Nombre del servicio |
 | Environment | No | dev | dev/staging/prod |
 
@@ -265,11 +305,14 @@ aws sqs get-queue-attributes \
 
 ## ⚠️ Notas Importantes
 
+- **Independencia**: Este stack NO comparte recursos con Serverless Java/Node
+- **Recursos con prefijo `cf-`**: Todos los recursos tienen este prefijo para diferenciarse
 - Las rutas S3 deben estar en la misma región AWS
 - Se requiere `CAPABILITY_NAMED_IAM` para crear el rol
 - DynamoDB es **privada** (sin acceso directo a internet)
 - SQS tiene DLQ para mensajes fallidos (reintentos automáticos)
 - Retention de logs CloudWatch: 7 días
+- **Orden de eliminación**: Si desplegó también Serverless, elimine en orden inverso (Node → Java → CloudFormation)
 
 ---
 

@@ -1,4 +1,4 @@
-service: reto-aws-serverless-users
+service: reto-aws-serverless-users-node
 
 frameworkVersion: '4'
 
@@ -7,15 +7,17 @@ provider:
   runtime: nodejs20.x
   region: ${env:AWS_REGION, 'us-east-1'}
   stage: ${env:ENVIRONMENT, 'dev'}
+  httpApi:
+    id:
+      Fn::ImportValue: reto-aws-serverless-users-java-${env:ENVIRONMENT, 'dev'}-HttpApiId
+    metrics: true
   environment:
     ENVIRONMENT: ${env:ENVIRONMENT, 'dev'}
-    DYNAMODB_TABLE_NAME: ${self:service}-${self:provider.stage}
+    DYNAMODB_TABLE_NAME: node-${self:service}-${self:provider.stage}
     USER_CREATED_QUEUE_URL:
       Ref: UserCreatedQueue
     EMAIL_NOTIFICATION_TOPIC_ARN:
       Ref: EmailNotificationTopic
-  httpApi:
-    metrics: true
   iam:
     role:
       statements:
@@ -65,7 +67,7 @@ functions:
     description: Create a new user (Node.js implementation)
     events:
       - httpApi:
-          path: /api/serverless/users
+          path: /api/serverless/users-node
           method: post
     timeout: 30
     memorySize: 256
@@ -76,7 +78,7 @@ functions:
     description: Get user by ID (Node.js implementation)
     events:
       - httpApi:
-          path: /api/serverless/users/{id}
+          path: /api/serverless/users-node/{id}
           method: get
     timeout: 30
     memorySize: 256
@@ -87,7 +89,7 @@ functions:
     description: Update user by ID (Node.js implementation)
     events:
       - httpApi:
-          path: /api/serverless/users/{id}
+          path: /api/serverless/users-node/{id}
           method: put
     timeout: 30
     memorySize: 256
@@ -98,7 +100,7 @@ functions:
     description: Delete user by ID (Node.js implementation)
     events:
       - httpApi:
-          path: /api/serverless/users/{id}
+          path: /api/serverless/users-node/{id}
           method: delete
     timeout: 30
     memorySize: 256
@@ -114,17 +116,44 @@ functions:
               - UserCreatedQueue
               - Arn
           batchSize: 10
-          maximumBatchingWindowInSeconds: 5
           functionResponseType: ReportBatchItemFailures
     timeout: 30
     memorySize: 256
 
 resources:
   Resources:
+    NodeUsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: node-${self:service}-${self:provider.stage}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: email-index
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: true
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        Tags:
+          - Key: Environment
+            Value: ${self:provider.stage}
+
     UserCreatedQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: ${self:service}-user-created-${self:provider.stage}
+        QueueName: node-${self:service}-user-created-${self:provider.stage}
         VisibilityTimeout: 300
         MessageRetentionPeriod: 1209600
         RedrivePolicy:
@@ -140,7 +169,7 @@ resources:
     UserCreatedDLQ:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: ${self:service}-user-created-dlq-${self:provider.stage}
+        QueueName: node-${self:service}-user-created-dlq-${self:provider.stage}
         MessageRetentionPeriod: 1209600
         Tags:
           - Key: Environment
@@ -149,7 +178,7 @@ resources:
     EmailNotificationTopic:
       Type: AWS::SNS::Topic
       Properties:
-        TopicName: ${self:service}-email-notifications-${self:provider.stage}
+        TopicName: node-${self:service}-email-notifications-${self:provider.stage}
         DisplayName: User Email Notifications
         Tags:
           - Key: Environment

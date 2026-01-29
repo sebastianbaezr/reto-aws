@@ -337,6 +337,7 @@ Resources:
       Environment:
         Variables:
           ENVIRONMENT: !Ref Environment
+          USER_CREATED_QUEUE_URL: !Ref UserCreatedQueue
           EMAIL_NOTIFICATION_TOPIC_ARN: !Ref EmailNotificationTopic
 
   EnviarCorreosNodeLambda:
@@ -354,14 +355,15 @@ Resources:
       Environment:
         Variables:
           ENVIRONMENT: !Ref Environment
+          USER_CREATED_QUEUE_URL: !Ref UserCreatedQueue
           EMAIL_NOTIFICATION_TOPIC_ARN: !Ref EmailNotificationTopic
 
   # ==============================================================================
   # API GATEWAY INTEGRATIONS (HU7)
   # ==============================================================================
 
-  # POST /api/serverless/users (Create User)
-  CreateUserIntegration:
+  # POST /api/serverless/users (Create User - Java)
+  CreateUserJavaIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref ApiGateway
@@ -369,14 +371,14 @@ Resources:
       IntegrationUri: !Sub '${CreateUserJavaLambda.Arn}'
       PayloadFormatVersion: '2.0'
 
-  CreateUserRoute:
+  CreateUserJavaRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref ApiGateway
       RouteKey: 'POST /api/serverless/users'
-      Target: !Sub 'integrations/${CreateUserIntegration}'
+      Target: !Sub 'integrations/${CreateUserJavaIntegration}'
 
-  CreateUserLambdaPermission:
+  CreateUserJavaLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref CreateUserJavaLambda
@@ -384,8 +386,32 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/*'
 
-  # GET /api/serverless/users/{id}
-  GetUserIntegration:
+  # POST /api/serverless/users-node (Create User - Node)
+  CreateUserNodeIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref ApiGateway
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub '${CreateUserNodeLambda.Arn}'
+      PayloadFormatVersion: '2.0'
+
+  CreateUserNodeRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ApiGateway
+      RouteKey: 'POST /api/serverless/users-node'
+      Target: !Sub 'integrations/${CreateUserNodeIntegration}'
+
+  CreateUserNodeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref CreateUserNodeLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/*'
+
+  # GET /api/serverless/users/{id} (Get User - Java)
+  GetUserJavaIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref ApiGateway
@@ -393,14 +419,14 @@ Resources:
       IntegrationUri: !Sub '${GetUserJavaLambda.Arn}'
       PayloadFormatVersion: '2.0'
 
-  GetUserRoute:
+  GetUserJavaRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref ApiGateway
       RouteKey: 'GET /api/serverless/users/{id}'
-      Target: !Sub 'integrations/${GetUserIntegration}'
+      Target: !Sub 'integrations/${GetUserJavaIntegration}'
 
-  GetUserLambdaPermission:
+  GetUserJavaLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref GetUserJavaLambda
@@ -408,8 +434,32 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/*'
 
-  # PUT /api/serverless/users/{id}
-  UpdateUserIntegration:
+  # GET /api/serverless/users-node/{id} (Get User - Node)
+  GetUserNodeIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref ApiGateway
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub '${GetUserNodeLambda.Arn}'
+      PayloadFormatVersion: '2.0'
+
+  GetUserNodeRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ApiGateway
+      RouteKey: 'GET /api/serverless/users-node/{id}'
+      Target: !Sub 'integrations/${GetUserNodeIntegration}'
+
+  GetUserNodeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref GetUserNodeLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/*'
+
+  # PUT /api/serverless/users/{id} (Update User - Java)
+  UpdateUserJavaIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref ApiGateway
@@ -417,14 +467,14 @@ Resources:
       IntegrationUri: !Sub '${UpdateUserJavaLambda.Arn}'
       PayloadFormatVersion: '2.0'
 
-  UpdateUserRoute:
+  UpdateUserJavaRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref ApiGateway
       RouteKey: 'PUT /api/serverless/users/{id}'
-      Target: !Sub 'integrations/${UpdateUserIntegration}'
+      Target: !Sub 'integrations/${UpdateUserJavaIntegration}'
 
-  UpdateUserLambdaPermission:
+  UpdateUserJavaLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref UpdateUserJavaLambda
@@ -432,8 +482,32 @@ Resources:
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/*'
 
-  # DELETE /api/serverless/users/{id}
-  DeleteUserIntegration:
+  # PUT /api/serverless/users-node/{id} (Update User - Node)
+  UpdateUserNodeIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref ApiGateway
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub '${UpdateUserNodeLambda.Arn}'
+      PayloadFormatVersion: '2.0'
+
+  UpdateUserNodeRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ApiGateway
+      RouteKey: 'PUT /api/serverless/users-node/{id}'
+      Target: !Sub 'integrations/${UpdateUserNodeIntegration}'
+
+  UpdateUserNodeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref UpdateUserNodeLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/*'
+
+  # DELETE /api/serverless/users/{id} (Delete User - Java)
+  DeleteUserJavaIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
       ApiId: !Ref ApiGateway
@@ -441,17 +515,41 @@ Resources:
       IntegrationUri: !Sub '${DeleteUserJavaLambda.Arn}'
       PayloadFormatVersion: '2.0'
 
-  DeleteUserRoute:
+  DeleteUserJavaRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref ApiGateway
       RouteKey: 'DELETE /api/serverless/users/{id}'
-      Target: !Sub 'integrations/${DeleteUserIntegration}'
+      Target: !Sub 'integrations/${DeleteUserJavaIntegration}'
 
-  DeleteUserLambdaPermission:
+  DeleteUserJavaLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref DeleteUserJavaLambda
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/*'
+
+  # DELETE /api/serverless/users-node/{id} (Delete User - Node)
+  DeleteUserNodeIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref ApiGateway
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub '${DeleteUserNodeLambda.Arn}'
+      PayloadFormatVersion: '2.0'
+
+  DeleteUserNodeRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref ApiGateway
+      RouteKey: 'DELETE /api/serverless/users-node/{id}'
+      Target: !Sub 'integrations/${DeleteUserNodeIntegration}'
+
+  DeleteUserNodeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref DeleteUserNodeLambda
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/*'
@@ -463,7 +561,7 @@ Resources:
   UsersTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub '${ServiceName}-${Environment}'
+      TableName: !Sub 'cf-${ServiceName}-${Environment}'
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: id
@@ -497,7 +595,7 @@ Resources:
   UserCreatedDLQ:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: !Sub '${ServiceName}-user-created-dlq-${Environment}'
+      QueueName: !Sub 'cf-${ServiceName}-user-created-dlq-${Environment}'
       MessageRetentionPeriod: 1209600
       Tags:
         - Key: Environment
@@ -508,7 +606,7 @@ Resources:
   UserCreatedQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: !Sub '${ServiceName}-user-created-${Environment}'
+      QueueName: !Sub 'cf-${ServiceName}-user-created-${Environment}'
       VisibilityTimeout: 300
       MessageRetentionPeriod: 1209600
       RedrivePolicy:
@@ -544,7 +642,7 @@ Resources:
   EmailNotificationTopic:
     Type: AWS::SNS::Topic
     Properties:
-      TopicName: !Sub '${ServiceName}-email-notifications-${Environment}'
+      TopicName: !Sub 'cf-${ServiceName}-email-notifications-${Environment}'
       DisplayName: User Email Notifications
       Tags:
         - Key: Environment

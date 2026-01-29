@@ -224,59 +224,123 @@ Los nuevos usuarios creados vía POST recibirán IDs comenzando desde 4.
 - Serverless Framework instalado
 - AWS CLI configurado
 
+### Arquitectura de Despliegue
+
+Los tres stacks se despliegan de forma **independiente**:
+
+```
+1. CloudFormation Stack (infraestructura independiente)
+   └── Recursos con prefijo: cf-
+
+2. Serverless Java Stack (crea API Gateway compartido)
+   ├── API Gateway HTTP (COMPARTIDO con Node)
+   ├── Lambdas Java CRUD
+   ├── Recursos con prefijo: java-
+   └── Exporta: HttpApiId
+
+3. Serverless Node Stack (usa API Gateway de Java)
+   ├── Lambdas Node CRUD (en el API Gateway de Java)
+   ├── Recursos con prefijo: node-
+   └── Importa: HttpApiId de Java
+```
+
 ### Pasos de Despliegue
 
-#### Opción 1: Desplegar Java (Recomendado)
+#### Paso 1: Desplegar CloudFormation (Opcional - Infraestructura Independiente)
+
+CloudFormation es **completamente independiente** y se puede desplegar por separado:
+
+```bash
+cd infrastructure/cloudformation
+
+# Validar template
+aws cloudformation validate-template \
+  --template-body file://reto-aws-main-stack.yaml \
+  --region us-east-1
+
+# Crear stack
+aws cloudformation create-stack \
+  --stack-name reto-aws-serverless-users-cloudformation \
+  --template-body file://reto-aws-main-stack.yaml \
+  --parameters \
+    ParameterKey=Environment,ParameterValue=dev \
+    ParameterKey=ServiceName,ParameterValue=reto-aws-serverless-users \
+    ParameterKey=JavaLambdaBucket,ParameterValue=tu-bucket \
+    ParameterKey=JavaLambdaKey,ParameterValue=serverless-java-all.jar \
+    ParameterKey=NodeLambdaBucket,ParameterValue=tu-bucket \
+    ParameterKey=NodeLambdaKey,ParameterValue=nodejs-lambda.zip \
+  --capabilities CAPABILITY_NAMED_IAM \
+  --region us-east-1
+
+# Esperar a que se cree
+aws cloudformation wait stack-create-complete \
+  --stack-name reto-aws-serverless-users-cloudformation \
+  --region us-east-1
+```
+
+#### Paso 2: Desplegar Serverless Java (Recomendado Primero)
+
+Java crea el API Gateway que será compartido con Node.
 
 ```bash
 # 1. Compilar el proyecto Java
 cd infrastructure/lambda/serverless-java
 gradle build
 
-# 2. Desplegar desde deployment
-cd ../../deployment
+# 2. Desplegar (crea API Gateway + Lambdas Java)
 export AWS_REGION=us-east-1
 export ENVIRONMENT=dev
 serverless deploy
+
+# 3. Guardar el ID del API Gateway (necesario para Node)
+serverless info --stage dev
 ```
 
-#### Opción 2: Desplegar Node.js
+#### Paso 3: Desplegar Serverless Node (Después de Java)
+
+Node **reutiliza el API Gateway de Java**. Debe desplegarse después de Java.
 
 ```bash
-# 1. Desplegar desde serverless-nodejs
 cd serverless-nodejs
-export AWS_REGION=us-east-1
-export ENVIRONMENT=dev
+
+# 1. Instalar dependencias
 npm install
-serverless deploy
-```
 
-#### Opción 3: Desplegar Ambas Implementaciones
-
-```bash
-# Primero Java
-cd infrastructure/lambda/serverless-java
-gradle build
-cd ../../deployment
+# 2. Desplegar (usa API Gateway de Java)
 export AWS_REGION=us-east-1
 export ENVIRONMENT=dev
 serverless deploy
 
-# Luego Node.js (reemplaza las funciones Java)
-cd ../../serverless-nodejs
-npm install
-serverless deploy
+# 3. Verificar que se agregó al mismo API Gateway
+serverless info --stage dev
 ```
 
 ### Ver Salida del Despliegue
 
 ```bash
-# Ver endpoints desplegados
+# Ver endpoints desplegados (Serverless Java)
+cd infrastructure/lambda/serverless-java
 serverless info --stage dev
 
-# Ver stack de CloudFormation
-aws cloudformation describe-stacks --stack-name reto-aws-serverless-users-dev --region us-east-1
+# Ver endpoints desplegados (Serverless Node)
+cd ../../serverless-nodejs
+serverless info --stage dev
+
+# Ver stack de CloudFormation (independiente)
+aws cloudformation describe-stacks \
+  --stack-name reto-aws-serverless-users-cloudformation \
+  --region us-east-1
 ```
+
+### Nombrado de Recursos
+
+Cada stack tiene sus propios recursos con **prefijos distintos** para evitar conflictos:
+
+| Stack | Prefijo | DynamoDB | SQS | SNS |
+|-------|---------|----------|-----|-----|
+| CloudFormation | `cf-` | cf-reto-aws-serverless-users-dev | cf-reto-aws-serverless-users-user-created-dev | cf-reto-aws-serverless-users-email-notifications-dev |
+| Serverless Java | `java-` | java-reto-aws-serverless-users-java-dev | java-reto-aws-serverless-users-java-user-created-dev | java-reto-aws-serverless-users-java-email-notifications-dev |
+| Serverless Node | `node-` | node-reto-aws-serverless-users-node-dev | node-reto-aws-serverless-users-node-user-created-dev | node-reto-aws-serverless-users-node-email-notifications-dev |
 
 ## Pruebas
 
